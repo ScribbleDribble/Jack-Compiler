@@ -14,9 +14,12 @@ void Tokenizer::get_tokens() {
         if (character == '\n')
             continue;
 
-        else if (tokenize_symbol(character, token, meta_string)) {
-            continue;
+       if (symbol_map.count(character) > 0) {
+            if (tokenize_symbol(character, token, meta_string)) {
+                continue;
+            }
         }
+
         if (!is_string(character, meta_string, token)) {
             if (is_singleline_comment(character, token)) {
                 file_stream.getline(comment_data, 256);
@@ -30,6 +33,7 @@ void Tokenizer::get_tokens() {
                 }
                 token = "";
             }
+
             else if ((int)character == space_ascii) {
                 if (!token.empty()) {
                     token_queue.push(token);
@@ -56,25 +60,30 @@ void Tokenizer::get_tokens() {
             }
         }
     }
-
     file_stream.close();
 }
 
 bool Tokenizer::is_singleline_comment(char character, const std::string& token) {
-    return token[0] == '/' && character == '/';
+    return token[0] == '/' && (character == '/' || token[1] == '/');
 }
 
 bool Tokenizer::is_multiline_comment(char character, const std::string& token) {
-    if (token.size() >= 2)
-        return token[0] == '/' && token[1] == '*';
-
-    return false;
+    return (token.size() >= 2 && (token[0] == '/' && token[1] == '*')) || token[0] == '/' && character == '*';
 }
 
 bool Tokenizer::tokenize_symbol(char character, std::string& token, const std::string& meta_string) {
+    char next_char;
+    std::streampos cur_pos = save_file_position();
+    file_stream.get(next_char);
 
-    if (symbol_map.count(character) > 0 && !is_multiline_comment(character, token) &&
-            !is_string(character, meta_string, token)) {
+    if (character == '/' && next_char == '/' || character == '/' && next_char == '*') {
+        file_stream.seekg(cur_pos);
+        return false;
+    }
+    file_stream.seekg(cur_pos);
+
+    if (!is_multiline_comment(character, token) &&
+            !is_string(character, meta_string, token) && !is_singleline_comment(character, token))  {
 
         if (!token.empty()){
             token_queue.push(token);
@@ -84,6 +93,10 @@ bool Tokenizer::tokenize_symbol(char character, std::string& token, const std::s
         return true;
     }
     return false;
+}
+
+std::streampos Tokenizer::save_file_position() {
+    return file_stream.tellg();
 }
 
 bool Tokenizer::is_multiline_end(char character, const std::string& token) {

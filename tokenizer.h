@@ -22,8 +22,8 @@ private:
             {')', 4}, {'[', 5}, {']', 6},
             {',', 7}, {'=', 8}, {';', 9},
             {'<',10}, {'>', 11}, {'+', 12},
-            {'-', 13}, {'%', 14}, {'@', 15},
-            {'.', 16}, {'&', 17}, {'|', 18},
+            {'-', 13}, {'%', 14}, {'/', 15},
+            {'.', 16}, {'*', 17}, {'|', 18},
     };
 
 public:
@@ -37,6 +37,7 @@ public:
     static bool is_multiline_comment(char character, const std::string& token);
     static bool is_multiline_end(char character, const std::string& token);
     static bool is_string(char character, const std::string& meta_string, const std::string& token);
+    std::streampos save_file_position();
     bool tokenize_symbol(char character, std::string& token, const std::string& meta_string );
     void get_tokens();
     void comment_test(bool single_flag, bool multi_flag);
