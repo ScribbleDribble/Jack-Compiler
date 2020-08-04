@@ -1,0 +1,29 @@
+   /***ok
+   std::cout << "hey there" << std::endl;
+   shouldnt see this
+   */
+
+
+std::string s = "i have no life\nlol"   // open a file in write mode.
+#include <fstream>    // open a file in write mode.
+
+
+#include <iostream>
+using namespace std;
+ 
+int main () {
+   char data[100];
+
+   ofstream outfile;
+   outfile.open("afile.dat");
+
+
+
+   int a = 5/10
+   cout << "Writing to the file" << endl;
+   cout << "Enter your name: "; 
+   cin.getline(data, 100);
+
+   return 0;
+
+}
