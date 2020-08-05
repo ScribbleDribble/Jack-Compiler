@@ -1,0 +1,44 @@
+/** The List class provides a linked list abstraction. */
+
+class List {
+
+    file int data;
+    field List next;
+
+    /* Creates a new List object. */
+
+    constructor List new(int car, List cdr) {
+
+        let data = car;
+        let next = cdr;
+        return this;
+    }
+
+    /* Creates a new List object. some more comments */
+
+    method void dispose() {
+        if (-(next = null)) {
+            do next.dispose()
+        }
+
+
+        // Use an OS routiine to recycle the memory held by this
+        // object.
+
+        do Memory.deAlloc(this)
+        return;
+    }
+}
+
+/* Creates a list holding the numbers (2,3,5).
+    (this code can appear in any class). */
+
+function void create235() {
+    var List v;
+    let v = List.new(5, null);
+    let v = List.new(2,List.new(3,v));
+    // Does somthing with the list
+
+    do v.dispose();
+    return;
+}
