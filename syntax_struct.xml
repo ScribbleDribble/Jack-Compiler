@@ -1,0 +1,16 @@
+<class>
+	<identifier>List</identifier>
+	<symbol>{</symbol>
+	<class_var_dec>
+		<keyword>field</keyword>
+		<type>int</type>
+		<identifier>data</identifier>
+		<identifier>num</identifier>
+		<identifier>anotha_one</identifier>
+	</class_var_dec>
+	<class_var_dec>
+		<keyword>field</keyword>
+		<type>List</type>
+		<identifier>next</identifier>
+	</class_var_dec>
+</class>

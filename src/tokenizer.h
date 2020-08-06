@@ -38,6 +38,8 @@ private:
             {"do", 1}
     };
 
+    std::map<std::string, int> type_map = { {"int", 1}, {"boolean", 1}, {"char", 1} };
+
     static bool is_singleline_comment(char character, const std::string& token);
     static bool is_multiline_comment(char character, const std::string& token);
     static bool is_multiline_end(char character, const std::string& token);
@@ -46,16 +48,19 @@ private:
     bool tokenize_symbol(char character, std::string& token, const std::string& meta_string );
     void get_tokens();
 
+    std::string cur_token;
+
 public:
 
     Tokenizer(std::ifstream& file_stream): file_stream(file_stream) {
         get_tokens();
     }
 
+
     bool contains_more();
 
     std::string advance();
-
+    std::string get_current_token();
     std::string type(const std::string& token);
     static std::string keyword_type(const std::string& token);
 
@@ -80,4 +85,7 @@ public:
     // '_' prefix is attached to every string in program text to separate it from identifiers
     std::string string_val(const std::string& token);
 
+    bool type_exists(const std::string& type_token) {
+        return type_map.count(type_token) > 0;
+    }
 };

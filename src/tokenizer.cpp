@@ -106,11 +106,11 @@ bool Tokenizer::is_string(char character, const std::string& meta_string, const 
 }
 
 std::string Tokenizer::type(const std::string& token) {
-    if (symbol_map.count(token[0] >= 1)) {
+    if (symbol_map.count(token[0]) > 0) {
         return "SYMBOL";
     }
 
-    else if (keyword_map.count(token) >= 1) {
+    else if (keyword_map.count(token) > 0) {
         return "KEYWORD";
     }
 
@@ -164,11 +164,15 @@ std::string Tokenizer::string_val(const std::string &token) {
 }
 
 bool Tokenizer::contains_more() {
-    return token_queue.empty();
+    return !token_queue.empty();
 }
 
 std::string Tokenizer::advance() {
-    std::string temp = token_queue.front();
+    cur_token = token_queue.front();
     token_queue.pop();
-    return temp;
+    return cur_token;
+}
+
+std::string Tokenizer::get_current_token() {
+    return cur_token;
 }

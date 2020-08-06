@@ -2,7 +2,7 @@
 
 class List {
 
-    file int data;
+    field int data, num, anotha_one;
     field List next;
 
     /* Creates a new List object. */

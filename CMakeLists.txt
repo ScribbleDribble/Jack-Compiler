@@ -4,5 +4,5 @@ project(jack_compiler)
 
 add_executable(
         jcomp
-        analyzer.h analyzer.cpp compilation_engine.h compilation_engine.cpp tokenizer.h tokenizer.cpp
+        src/analyzer.cpp src/parser.h src/parser.cpp src/tokenizer.h src/tokenizer.cpp
 )
