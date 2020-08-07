@@ -7,13 +7,12 @@ class List {
 
     /* Creates a new List object. */
 
-    constructor List new(int car, List cdr) {
+    constructor List (int car, List cdr) {
 
         let data = car;
         let next = cdr;
         return this;
     }
-
     /* Creates a new List object. some more comments */
 
     method void dispose() {

@@ -7,10 +7,28 @@
 		<identifier>data</identifier>
 		<identifier>num</identifier>
 		<identifier>anotha_one</identifier>
+		<symbol>;</symbol>
 	</class_var_dec>
 	<class_var_dec>
 		<keyword>field</keyword>
 		<type>List</type>
 		<identifier>next</identifier>
+		<symbol>;</symbol>
 	</class_var_dec>
-</class>
+	<subroutine>
+		<keyword>constructor</keyword>
+		<symbol>(</symbol>
+		<param_list>
+			<type>int</type>
+			<identifier>car</identifier>
+			<symbol>,</symbol>
+			<type>List</type>
+			<identifier>cdr</identifier>
+		</param_list>
+		<symbol>)</symbol>
+		<symbol>{</symbol>
+		<statements>
+		<let_statement>
+<			<identifier>data</identifier>
+			<symbol>=</symbol>
+		<let_statement>

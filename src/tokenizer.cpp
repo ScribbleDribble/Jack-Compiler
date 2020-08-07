@@ -176,3 +176,7 @@ std::string Tokenizer::advance() {
 std::string Tokenizer::get_current_token() {
     return cur_token;
 }
+
+int Tokenizer::get_keyword_val(const std::string& token) {
+    return keyword_map[token];
+}
