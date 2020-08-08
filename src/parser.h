@@ -16,6 +16,7 @@ class Parser {
 private:
     std::ofstream& out_file;
     Tokenizer& tokenizer;
+    std::string cur_token;
     std::string class_name;
 public:
 
@@ -44,6 +45,7 @@ public:
 
     void parse_expression();
     void parse_term();
+    void parse_subroutine_call();
     void parse_expression_list();
 
     void query_tokenizer();
@@ -54,4 +56,7 @@ public:
     void check_type_exists();
     void check_op_exists(const std::string& op_token);
 
+    // term detection helper functions
+    bool is_array();
+    bool is_subroutine_call();
 };

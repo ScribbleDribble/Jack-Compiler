@@ -1,3 +1,4 @@
+// Code from the book The Elements of Computing Systems: Building a Modern Computer from First Principles
 /** The List class provides a linked list abstraction. */
 
 class List {
@@ -9,7 +10,7 @@ class List {
 
     constructor List (int car, List cdr) {
 
-        let data = car;
+        let data = car + truck() + airplane.get_speed(k, foo) + 2 + 99 + xyz + lmaoooo;
         let next = cdr;
         return this;
     }

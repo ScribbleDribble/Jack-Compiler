@@ -2,20 +2,21 @@
 void Parser::query_tokenizer() {
     if (tokenizer.contains_more()) {
         tokenizer.advance();
+        cur_token =  tokenizer.get_current_token();
     }
 }
 
 void Parser::parse_class() {
     // skip class declaration
-    tokenizer.advance();
-    tokenizer.advance();
+    query_tokenizer();
+    query_tokenizer();
 
     out_file << "<class>" << std::endl;
 
     check_token_type_x_after_y("IDENTIFIER", "class keyword");
     out_file << "\t<identifier>" + tokenizer.get_current_token() + "</identifier>" << std::endl;
     tokenizer.add_type(tokenizer.get_current_token());
-    class_name = tokenizer.get_current_token();
+    class_name = cur_token;
     query_tokenizer();
 
 
@@ -42,14 +43,14 @@ void Parser::parse_class() {
         parse_subroutine(subroutine_type);
     }
 
-    out_file << "\n</class>" << std::endl;
+    out_file << "</class>" << std::endl;
 }
 
 
 void Parser::parse_class_var_dec() {
     out_file << "\t<class_var_dec>" << std::endl;
     out_file << "\t\t<keyword>" + tokenizer.get_current_token() + "</keyword>" << std::endl;
-    tokenizer.advance();
+    query_tokenizer();
 
     if (tokenizer.type_exists(tokenizer.get_current_token())) {
         out_file << "\t\t<type>" + tokenizer.get_current_token() + "</type>" << std::endl;
@@ -81,9 +82,9 @@ void Parser::parse_class_var_dec() {
     }
 
     check_expected_x_after_y(";", "identifier");
-    out_file << "\t\t<symbol>;</symbol>";
+    out_file << "\t\t<symbol>;</symbol>" << std::endl;
 
-    out_file << "\n\t</class_var_dec>" << std::endl;
+    out_file << "\t</class_var_dec>" << std::endl;
 }
 
 void Parser::parse_subroutine(const std::string& subroutine_type) {
@@ -128,6 +129,8 @@ void Parser::parse_subroutine(const std::string& subroutine_type) {
 
     query_tokenizer();
     parse_subroutine_body();
+
+    out_file << "\t</subroutine>" << std::endl;
 }
 
 void Parser::parse_param_list() {
@@ -207,7 +210,7 @@ void Parser::parse_var_dec() {
 void Parser::parse_statements() {
     out_file << "\t\t<statements>" << std::endl;
 
-    int keyword = tokenizer.get_keyword_val(tokenizer.get_current_token());
+    int keyword = tokenizer.get_keyword_val(cur_token);
 
     while (keyword >= LET && keyword <= DO) {
         query_tokenizer();
@@ -237,7 +240,7 @@ void Parser::parse_statements() {
                 std::cerr << "Expected a statement instead of " + tokenizer.get_current_token() << std::endl;
                 exit(0);
         }
-
+        keyword = tokenizer.get_keyword_val(cur_token);
     }
 
     out_file << "\t\t</statements>" << std::endl;
@@ -254,24 +257,26 @@ void Parser::parse_let_statement() {
         query_tokenizer();
 
         check_token_type_x_after_y("INT_CONST", "symbol");
-        out_file << "\t\t\t<int>" + tokenizer.get_current_token() + "</int>" << std::endl;
+        out_file << "\t\t\t<int>" + cur_token + "</int>" << std::endl;
         query_tokenizer();
 
-        check_expected_x_after_y("SYMBOL", "integer");
-        out_file << "\t\t\t<symbol>" + tokenizer.get_current_token() + "</symbol>" << std::endl;
+        check_expected_x_after_y("]", "integer");
+        out_file << "\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
         query_tokenizer();
+        check_expected_x_after_y("=", "]");
+
+    }
+    else {
+        check_expected_x_after_y("=", "identifier");
     }
 
-    if (tokenizer.get_current_token() != "=") {
-        std::cerr << "Compiler Error: Expected an = instead of " + tokenizer.get_current_token();
-        exit(0);
-    }
+
 
     out_file << "\t\t\t<symbol>=</symbol>" << std::endl;
     query_tokenizer();
 
     parse_expression();
-    out_file << "\t\t\t</let_statement>" << std::endl;
+    out_file << "\t\t</let_statement>" << std::endl;
 }
 
 void Parser::parse_if_statement() {
@@ -291,20 +296,70 @@ void Parser::parse_do_statement() {
 }
 
 void Parser::parse_expression() {
-//    check_token_type_x_after_y("INT_CONST", "=");
-//    out_file << "\t\t\t<int>" + tokenizer.get_current_token() + "</int>" << std::endl;
-//    query_tokenizer();
+    out_file << "\t\t\t<expression>" << std::endl;
+    parse_term();
 
-    check_op_exists(tokenizer.get_current_token());
-    out_file << "\t\t\t<symbol>" + tokenizer.get_current_token() + "</symbol>" << std::endl;
+    while (tokenizer.op_exists(cur_token)) {
+        out_file << "\t\t\t\t<symbol>" + cur_token << "</symbol>" << std::endl;
+        query_tokenizer();
+        parse_term();
+    }
+
+    out_file << "\t\t\t</expression>" << std::endl;
+//    query_tokenizer();
+}
+
+void Parser::parse_term() {
+
+    std::string cur_token_type = tokenizer.type(cur_token);
+
+    if (cur_token_type == "IDENTIFIER") {
+        out_file << "\t\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+        query_tokenizer();
+        if (is_array())
+        {
+            out_file << "\t\t\t\t<symbol>[</symbol>" << std::endl;
+            parse_expression();
+            out_file << "\t\t\t\t<symbol>]</symbol>" << std::endl;
+        }
+
+        else if (is_subroutine_call()) {
+        }
+
+    }
+
+    else if (cur_token_type == "STRING_CONST" || cur_token_type == "INT_CONST" || cur_token_type == "KEYWORD") {
+        out_file << "\t\t\t\t<" + cur_token_type +  ">" +
+                    cur_token + "</" + cur_token_type + ">" << std::endl;
+        query_tokenizer();
+    }
+
+    else if(cur_token == "(") {
+        out_file << "\t\t\t\t<symbol>(</symbol>" << std::endl;
+        query_tokenizer();
+        parse_expression();
+
+        check_expected_x_after_y(")", "expression");
+        out_file << "\t\t\t\t<symbol>)</symbol>" << std::endl;
+        query_tokenizer();
+    }
+
+    else if (cur_token == "-") {
+        out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+        query_tokenizer();
+        parse_term();
+    }
+
+}
+
+void Parser::parse_subroutine_call() {
     query_tokenizer();
 
-//    check_token_type_x_after_y("IDENTIFIER", "after operator symbol");
-//    out_file << "\t\t\t<"
 }
 
 void Parser::check_expected_x_after_y(const std::string& expected, const std::string& syntactic_element) {
     // only to be called once the token to be compared has already been advanced to the front of the queue
+    // compares x to the current token and displays error message mentioning x was expected after y
     if (tokenizer.get_current_token() != expected) {
         std::cerr << "Compiler Error: expected " + expected + " after " + syntactic_element;
         exit(0);
@@ -313,24 +368,90 @@ void Parser::check_expected_x_after_y(const std::string& expected, const std::st
 
 void Parser::check_token_type_x_after_y(const std::string& expected_token_type, const std::string& syntactic_element) {
     // syntactic token types
-    if (tokenizer.type(tokenizer.get_current_token()) != expected_token_type) {
+    if (tokenizer.type(cur_token) != expected_token_type) {
         std::cerr << "Compiler Error: expected " + expected_token_type + " after " + syntactic_element;
         exit(0);
     }
 }
 
 void Parser::check_type_exists() {
-    // types defined by language
-    if (!tokenizer.type_exists(tokenizer.get_current_token())) {
-        std::cerr << "Compiler Error: '" + tokenizer.get_current_token() + "' is not a valid type";
+    // types defined by language + user defined types
+    if (!tokenizer.type_exists(cur_token)) {
+        std::cerr << "Compiler Error: '" + cur_token + "' is not a valid type";
         exit(0);
     }
 }
 
 void Parser::check_op_exists(const std::string& op_token) {
-    if (!tokenizer.op_exists()) {
-        std::cerr << "Compiler Error: expected a valid operator but instead got" + tokenizer.get_current_token();
+    if (!tokenizer.op_exists(op_token)) {
+        std::cerr << "Compiler Error: expected a valid operator but instead got " + cur_token;
         exit(0);
     }
 }
 
+bool Parser::is_array() {
+    // only to be called once we know Tokenizer::type() == "IDENTIFIER"
+    if (tokenizer.get_current_token() != "[") {
+        return false;
+    }
+    query_tokenizer();
+
+    check_expected_x_after_y("]", "[");
+    return true;
+}
+
+bool Parser::is_subroutine_call() {
+    // only to be called once we know Tokenizer::type() == "IDENTIFIER"
+    if (tokenizer.get_current_token() == ".") {
+        out_file << "\t\t\t\t<symbol>.</symbol>" << std::endl;
+        query_tokenizer();
+
+
+        check_token_type_x_after_y("IDENTIFIER", ".");
+        out_file << "\t\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+        query_tokenizer();
+
+        check_expected_x_after_y("(", ".");
+        out_file << "\t\t\t\t<symbol>(</symbol>" << std::endl;
+        query_tokenizer();
+
+        if (cur_token != ")") {
+            parse_expression_list();
+        }
+
+        else {
+            out_file << "\t\t\t\t<symbol>)</symbol>" << std::endl;
+            query_tokenizer();
+        }
+
+
+        return true;
+    }
+
+    else if (cur_token == "(") {
+        query_tokenizer();
+        check_expected_x_after_y(")", "(");
+        out_file << "\t\t\t\t<symbol>(</symbol>\n\t\t\t\t<symbol>)</symbol>" << std::endl;
+        query_tokenizer();
+        return true;
+    }
+
+    return false;
+}
+
+void Parser::parse_expression_list() {
+    out_file << "\t\t\t\t<expression_list>" << std::endl;
+    parse_expression();
+
+    while (cur_token == ",") {
+        out_file << "\t\t\t\t<symbol>,</symbol>" << std::endl;
+        query_tokenizer();
+
+        parse_expression();
+    }
+
+    check_expected_x_after_y(")", "identifier");
+    out_file << "\t\t\t\t<symbol>)</symbol>" << std::endl;
+    out_file << "\t\t\t</expression_list>" << std::endl;
+    query_tokenizer();
+}

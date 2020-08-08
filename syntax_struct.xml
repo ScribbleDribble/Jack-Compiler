@@ -29,6 +29,39 @@
 		<symbol>{</symbol>
 		<statements>
 		<let_statement>
-<			<identifier>data</identifier>
+			<identifier>data</identifier>
 			<symbol>=</symbol>
-		<let_statement>
+			<expression>
+				<identifier>car</identifier>
+				<symbol>+</symbol>
+				<identifier>truck</identifier>
+				<symbol>(</symbol>
+				<symbol>)</symbol>
+				<symbol>+</symbol>
+				<identifier>airplane</identifier>
+				<symbol>.</symbol>
+				<identifier>get_speed</identifier>
+				<symbol>(</symbol>
+				<expression_list>
+			<expression>
+				<identifier>k</identifier>
+			</expression>
+				<symbol>,</symbol>
+			<expression>
+				<identifier>foo</identifier>
+			</expression>
+				<symbol>)</symbol>
+			</expression_list>
+				<symbol>+</symbol>
+				<INT_CONST>2</INT_CONST>
+				<symbol>+</symbol>
+				<INT_CONST>99</INT_CONST>
+				<symbol>+</symbol>
+				<identifier>xyz</identifier>
+				<symbol>+</symbol>
+				<identifier>lmaoooo</identifier>
+			</expression>
+		</let_statement>
+		</statements>
+	</subroutine>
+</class>
