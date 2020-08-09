@@ -39,7 +39,20 @@ void Parser::parse_class() {
         parse_subroutine(subroutine_type);
     }
 
+    check_expected_x_after_y("}", "class definition");
     out_file << "</class>" << std::endl;
+    query_tokenizer();
+
+    while (cur_token == "function" || cur_token == "class") {
+        if (cur_token == "class") {
+            query_tokenizer();
+            parse_class();
+        }
+        else {
+            query_tokenizer();
+            parse_subroutine(cur_token);
+        }
+    }
 }
 
 
@@ -161,6 +174,7 @@ void Parser::parse_subroutine_body() {
     query_tokenizer();
 
     parse_var_dec();
+
     parse_statements();
 
     check_expected_x_after_y("}", "statement(s)");
@@ -172,30 +186,32 @@ void Parser::parse_subroutine_body() {
 void Parser::parse_var_dec() {
 
     int variable_count = 0;
-    while(tokenizer.get_current_token() == "var" || variable_count > 0) {
-        out_file << "\t\t<identifier>" + tokenizer.get_current_token() + "</identifier>" << std::endl;
+    while(cur_token == "var" || variable_count > 0) {
+        out_file << "\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
         query_tokenizer();
 
         check_type_exists();
-        out_file << "\t\t<type>" + tokenizer.get_current_token() + "</type>" << std::endl;
+        out_file << "\t\t<type>" + cur_token + "</type>" << std::endl;
         query_tokenizer();
 
         check_token_type_x_after_y("IDENTIFIER", "type");
-        out_file << "\t\t<identifier>" + tokenizer.get_current_token() + "</identifier>" << std::endl;
+        out_file << "\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
         query_tokenizer();
 
         variable_count++;
-        if (tokenizer.get_current_token() == ";")
+        if (cur_token == ";")
         {
             out_file << "\t\t<symbol>;</symbol>" << std::endl;
+            query_tokenizer();
             break;
         }
 
-        if (tokenizer.get_current_token() != ",") {
+        if (cur_token != ",") {
             std::cerr << "Expected either a , or ;" << std::endl;
         }
         query_tokenizer();
     }
+
 }
 
 void Parser::parse_statements() {
@@ -270,11 +286,69 @@ void Parser::parse_let_statement() {
 }
 
 void Parser::parse_if_statement() {
+    out_file << "\t\t\t<if_statement>" << std::endl;
+
+    check_expected_x_after_y("(", "if statement");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    parse_expression();
+
+    check_expected_x_after_y(")", "expression");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    check_expected_x_after_y("{", ")");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    parse_statements();
+
+    check_expected_x_after_y("}", "statements");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    if (cur_token == "else") {
+        out_file << "\t\t\t<else_statement>" << std::endl;
+        query_tokenizer();
+
+        check_expected_x_after_y("{", "else statement");
+        out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+
+        parse_statements();
+
+        check_expected_x_after_y("}", "statements");
+        out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    }
+
+    out_file << "\t\t\t</if_statement>" << std::endl;
 
 }
 
 void Parser::parse_while_statement() {
+    out_file << "\t\t\t<while_statement>" << std::endl;
 
+    check_expected_x_after_y("(", "while statement");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    parse_expression();
+
+    check_expected_x_after_y(")", "expression");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    check_expected_x_after_y("{", ")");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    parse_statements();
+
+    check_expected_x_after_y("}", "statements");
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+    query_tokenizer();
+
+    out_file << "\t\t\t</while_statement>" << std::endl;
 }
 
 void Parser::parse_return_statement() {
@@ -291,11 +365,19 @@ void Parser::parse_return_statement() {
 void Parser::parse_do_statement() {
     // TODO test
     out_file << "\t\t\t<do_statement>" << std::endl;
+
+    check_token_type_x_after_y("IDENTIFIER", "do statement");
+    out_file << "\t\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+    query_tokenizer();
+
     parse_subroutine_call();
 
     check_expected_x_after_y(";", "subroutine call");
-    out_file << "<symbol>" + cur_token + "</symbol>" << std::endl;
+    out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
     query_tokenizer();
+
+    out_file << "\t\t\t</do_statement>" << std::endl;
+
 }
 
 void Parser::parse_expression() {

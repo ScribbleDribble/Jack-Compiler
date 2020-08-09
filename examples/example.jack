@@ -18,14 +18,14 @@ class List {
 
     method void dispose(int name, int price) {
         if (-(next = null)) {
-            do next.dispose()
+            do next.dispose();
         }
 
 
-        // Use an OS routiine to recycle the memory held by this
+        // Use an OS routine to recycle the memory held by this
         // object.
 
-        do Memory.deAlloc(this)
+        do Memory.deAlloc(this);
         return;
     }
 }
@@ -38,6 +38,10 @@ function void create235() {
     let v = List.new(5, null);
     let v = List.new(2,List.new(3,v));
     // Does somthing with the list
+
+    while (something) {
+        let v = ok;
+    }
 
     do v.dispose();
     return;
