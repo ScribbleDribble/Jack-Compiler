@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include "tokenizer.h"
+#include <map>
 
 class Parser {
 
@@ -26,6 +27,8 @@ public:
     }
 
     enum statements { LET = 9, IF = 10, ELSE = 11, WHILE = 12, RETURN = 13, DO = 14};
+    std::map<std::string, int> keyword_constant_map = { {"true", 1}, {"false", 1}, {"null", 1},
+                                                        {"this", 1} };
 
     void parse_class();
     void parse_class_var_dec();
@@ -58,5 +61,5 @@ public:
 
     // term detection helper functions
     bool is_array();
-    bool is_subroutine_call();
+//    bool parse_subroutine_call();
 };

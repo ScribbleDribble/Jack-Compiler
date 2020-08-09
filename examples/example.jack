@@ -1,4 +1,4 @@
-// Code from the book The Elements of Computing Systems: Building a Modern Computer from First Principles
+// Code from the book The Elements of Computing Systems: Building a Modern Computer from First Principles *now modified
 /** The List class provides a linked list abstraction. */
 
 class List {
@@ -16,7 +16,7 @@ class List {
     }
     /* Creates a new List object. some more comments */
 
-    method void dispose() {
+    method void dispose(int name, int price) {
         if (-(next = null)) {
             do next.dispose()
         }
