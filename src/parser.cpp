@@ -65,7 +65,7 @@ void Parser::parse_class_var_dec() {
     query_tokenizer();
 
     if (tokenizer.type_exists(tokenizer.get_current_token())) {
-        out_file << "\t\t<type>" + tokenizer.get_current_token() + "</type>" << std::endl;
+        out_file << "\t\t<keyword>" + tokenizer.get_current_token() + "</keyword>" << std::endl;
         query_tokenizer();
     }
     else {
@@ -115,10 +115,10 @@ void Parser::parse_subroutine(const std::string& subroutine_type) {
     }
     else if (tokenizer.type_exists(tokenizer.get_current_token()) || tokenizer.get_current_token() == "void") {
 
-        out_file << "\t\t<type>" + tokenizer.get_current_token() + "</type>" << std::endl;
+        out_file << "\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
         query_tokenizer();
 
-        if (tokenizer.type(tokenizer.get_current_token()) == "IDENTIFIER") {
+        if (tokenizer.type(cur_token) == "IDENTIFIER") {
             out_file << "\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
             query_tokenizer();
         }
@@ -157,7 +157,7 @@ void Parser::parse_param_list() {
             query_tokenizer();
         }
 
-        out_file << "\t\t\t<type>" + tokenizer.get_current_token() + "</type>" << std::endl;
+        out_file << "\t\t\t<keyword>" + tokenizer.get_current_token() + "</keyword>" << std::endl;
         query_tokenizer();
 
         check_token_type_x_after_y("IDENTIFIER", "type");

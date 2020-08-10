@@ -3,14 +3,14 @@
 	<symbol>{</symbol>
 	<class_var_dec>
 		<keyword>field</keyword>
-		<type>int</type>
+		<keyword>int</keyword>
 		<identifier>x</identifier>
 		<identifier>y</identifier>
 		<symbol>;</symbol>
 	</class_var_dec>
 	<class_var_dec>
 		<keyword>field</keyword>
-		<type>int</type>
+		<keyword>int</keyword>
 		<identifier>size</identifier>
 		<symbol>;</symbol>
 	</class_var_dec>
@@ -19,13 +19,13 @@
 		<keyword>new</keyword>
 		<symbol>(</symbol>
 		<param_list>
-			<type>int</type>
+			<keyword>int</keyword>
 			<identifier>Ax</identifier>
 			<symbol>,</symbol>
-			<type>int</type>
+			<keyword>int</keyword>
 			<identifier>Ay</identifier>
 			<symbol>,</symbol>
-			<type>int</type>
+			<keyword>int</keyword>
 			<identifier>Asize</identifier>
 		</param_list>
 		<symbol>)</symbol>
@@ -72,7 +72,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>dispose</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -101,7 +101,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>draw</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -159,7 +159,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>erase</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -217,7 +217,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>incSize</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -292,7 +292,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>decSize</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -343,7 +343,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>moveUp</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -474,7 +474,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>moveDown</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -611,7 +611,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>moveLeft</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -742,7 +742,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>moveRight</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -883,13 +883,13 @@
 	<symbol>{</symbol>
 	<class_var_dec>
 		<keyword>field</keyword>
-		<type>Square</type>
+		<keyword>Square</keyword>
 		<identifier>square</identifier>
 		<symbol>;</symbol>
 	</class_var_dec>
 	<class_var_dec>
 		<keyword>field</keyword>
-		<type>int</type>
+		<keyword>int</keyword>
 		<identifier>direction</identifier>
 		<symbol>;</symbol>
 	</class_var_dec>
@@ -946,7 +946,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>dispose</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -983,7 +983,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>run</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -1245,7 +1245,7 @@
 	</subroutine>
 	<subroutine>
 		<keyword>method</keyword>
-		<type>void</type>
+		<keyword>void</keyword>
 		<identifier>moveSquare</identifier>
 		<symbol>(</symbol>
 		<param_list>
@@ -1348,6 +1348,60 @@
 				</expression>
 					<symbol>)</symbol>
 				</expression_list>
+				<symbol>;</symbol>
+			</do_statement>
+			<return_statement>
+				<symbol>;</symbol>
+			</return_statement>
+		</statements>
+		<symbol>}</symbol>
+	</subroutine>
+</class>
+<class>
+	<identifier>Main</identifier>
+	<symbol>{</symbol>
+	<subroutine>
+		<keyword>function</keyword>
+		<keyword>void</keyword>
+		<identifier>main</identifier>
+		<symbol>(</symbol>
+		<param_list>
+		</param_list>
+		<symbol>)</symbol>
+		<symbol>{</symbol>
+		<varDec>
+			<keyword>var</keyword>
+			<keyword>SquareGame</keyword>
+			<identifier>game</identifier>
+			<symbol>;</symbol>
+		</varDec>
+		<statements>
+			<let_statement>
+				<identifier>game</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>SquareGame</identifier>
+					<symbol>.</symbol>
+					<identifier>new</identifier>
+					<symbol>(</symbol>
+					<symbol>)</symbol>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+			<do_statement>
+				<identifier>game</identifier>
+					<symbol>.</symbol>
+					<identifier>run</identifier>
+					<symbol>(</symbol>
+					<symbol>)</symbol>
+				<symbol>;</symbol>
+			</do_statement>
+			<do_statement>
+				<identifier>game</identifier>
+					<symbol>.</symbol>
+					<identifier>dispose</identifier>
+					<symbol>(</symbol>
+					<symbol>)</symbol>
 				<symbol>;</symbol>
 			</do_statement>
 			<return_statement>
