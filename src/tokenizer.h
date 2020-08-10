@@ -26,6 +26,7 @@ private:
             {'<',10}, {'>', 11}, {'+', 12},
             {'-', 13}, {'%', 14}, {'/', 15},
             {'.', 16}, {'*', 17}, {'|', 18},
+            {'~', 19}
     };
 
     std::map<std::string, int> keyword_map = {
@@ -35,7 +36,7 @@ private:
             {"if", 10}, {"else", 11}, {"while", 12},
             {"return", 13}, {"true", 19}, {"false", 15},
             {"char", 16}, {"this", 17}, {"null", 18},
-            {"do", 14}
+            {"do", 14}, {"var", 15}
     };
 
     std::map<std::string, int> type_map = { {"int", 1}, {"boolean", 1}, {"char", 1} };
@@ -49,18 +50,20 @@ private:
     static bool is_string(char character, const std::string& meta_string, const std::string& token);
     std::streampos save_file_position();
     bool tokenize_symbol(char character, std::string& token, const std::string& meta_string );
-    void get_tokens();
 
     std::string cur_token;
 
 
 public:
 
-    Tokenizer(std::ifstream& file_stream): file_stream(file_stream) {
-        get_tokens();
+    Tokenizer(std::ifstream& file): file_stream(file) {
+
     }
 
     enum class SyntacticType {SYMBOL, KEYWORD, STRING_CONST, INT_CONST, IDENTIFIER};
+
+
+    void get_tokens();
 
     bool contains_more();
 
@@ -98,7 +101,6 @@ public:
         // adds user defined types as a recognizable type
         type_map[user_def_type] = 1;
     }
-
     int get_keyword_val(const std::string& token);
 
     bool op_exists(const std::string& token) {

@@ -8,7 +8,7 @@ class List {
 
     /* Creates a new List object. */
 
-    constructor List (int car, List cdr) {
+    constructor List new(int car, List cdr) {
 
         let data = car + truck() + airplane.get_speed(k, foo) + 2 + 99 + xyz + lmaoooo;
         let next = cdr;
@@ -17,6 +17,10 @@ class List {
     /* Creates a new List object. some more comments */
 
     method void dispose(int name, int price) {
+        var char key;
+        var char key2;
+
+
         if (-(next = null)) {
             do next.dispose();
         }
@@ -37,7 +41,7 @@ function void create235() {
     var List v;
     let v = List.new(5, null);
     let v = List.new(2,List.new(3,v));
-    // Does somthing with the list
+    // Does something with the list
 
     while (something) {
         let v = ok;

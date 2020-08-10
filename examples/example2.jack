@@ -1,0 +1,6 @@
+Class Bar {
+    method void foo(int y) {
+        var int temp; // a variable
+        let temp = (xxx+12)*-63;
+    }
+}

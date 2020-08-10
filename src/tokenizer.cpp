@@ -10,7 +10,7 @@ void Tokenizer::get_tokens() {
 
     while (file_stream.get(character)) {
 
-        if (character == '\n')
+        if (character == '\n' || character == '\t')
             continue;
 
        if (symbol_map.count(character) > 0) {
@@ -180,3 +180,6 @@ std::string Tokenizer::get_current_token() {
 int Tokenizer::get_keyword_val(const std::string& token) {
     return keyword_map[token];
 }
+
+
+

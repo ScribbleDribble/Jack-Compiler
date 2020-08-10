@@ -23,6 +23,7 @@ public:
 
     Parser(std::ofstream& out_file, Tokenizer& tokenizer): out_file(out_file), tokenizer(tokenizer)
     {
+        query_tokenizer();
         parse_class();
     }
 
@@ -61,5 +62,4 @@ public:
 
     // term detection helper functions
     bool is_array();
-//    bool parse_subroutine_call();
 };
