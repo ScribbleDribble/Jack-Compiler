@@ -40,6 +40,8 @@ public:
     std::string get_kind(const std::string& identifier);
     std::string get_type(const std::string& identifier);
     int get_index(const std::string& identifier);
+    void free_class();
+    void free_subroutine();
 
 };
 

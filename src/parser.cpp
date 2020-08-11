@@ -42,39 +42,42 @@ void Parser::parse_class() {
     out_file << "</class>" << std::endl;
     query_tokenizer();
 
-    while (cur_token == "function" || cur_token == "class") {
-        if (cur_token == "class") {
-            if (cur_token == "class")
-                parse_class();
-
-//            else
-//                query_tokenizer();
-
-        }
-        else {
-            query_tokenizer();
-            parse_subroutine(cur_token);
-        }
+    while (cur_token == "function") {
+        query_tokenizer();
+        symbol_table.start_subroutine();
+        symbol_table.free_subroutine();
+        parse_subroutine(cur_token);
     }
+
+    symbol_table.free_subroutine();
+    symbol_table.free_class();
 }
 
 
 void Parser::parse_class_var_dec() {
+    std::string type, kind, name;
+
     out_file << "\t<class_var_dec>" << std::endl;
-    out_file << "\t\t<keyword>" + tokenizer.get_current_token() + "</keyword>" << std::endl;
+    out_file << "\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
+    kind = Tokenizer::to_upper(cur_token);
     query_tokenizer();
 
-    if (tokenizer.type_exists(tokenizer.get_current_token())) {
-        out_file << "\t\t<keyword>" + tokenizer.get_current_token() + "</keyword>" << std::endl;
+
+
+    if (tokenizer.type_exists(cur_token)) {
+        out_file << "\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
+        type = cur_token;
         query_tokenizer();
     }
     else {
-        std::cerr << "Compiler Error: the token '" + tokenizer.get_current_token() + "' is not a valid type.";
+        std::cerr << "Compiler Error: the token '" + cur_token + "' is not a valid type.";
         exit(0);
     }
 
-    if (tokenizer.type(tokenizer.get_current_token()) == "IDENTIFIER") {
-        out_file << "\t\t<identifier>" + tokenizer.get_current_token() + "</identifier>" << std::endl;
+    if (tokenizer.type(cur_token) == "IDENTIFIER") {
+        out_file << "\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+        name = cur_token;
+        symbol_table.set_data(name, type, kind);
         query_tokenizer();
     }
     else {
@@ -82,10 +85,11 @@ void Parser::parse_class_var_dec() {
         exit(0);
     }
 
-    while (tokenizer.get_current_token() == ",") {
+    while (cur_token == ",") {
         query_tokenizer();
-        if (tokenizer.type(tokenizer.get_current_token()) == "IDENTIFIER") {
+        if (tokenizer.type(cur_token) == "IDENTIFIER") {
             out_file << "\t\t<identifier>" + tokenizer.get_current_token() + "</identifier>" << std::endl;
+            symbol_table.set_data(cur_token, type, kind);
             query_tokenizer();
         }
     }
@@ -118,16 +122,12 @@ void Parser::parse_subroutine(const std::string& subroutine_type) {
         out_file << "\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
         query_tokenizer();
 
-        if (tokenizer.type(cur_token) == "IDENTIFIER") {
-            out_file << "\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
-            query_tokenizer();
-        }
-        else {
-            std::cerr << "Compiler Error: Expected identifier after subroutine type definition" << std::endl;
-        }
+        check_token_type_x_after_y("IDENTIFIER", "subroutine definition");
+        out_file << "\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+        query_tokenizer();
     }
     else {
-        std::cerr << "Compiler Error: '" + tokenizer.get_current_token() + "' not a valid type for a subroutine"
+        std::cerr << "Compiler Error: '" + cur_token + "' not a valid type for a subroutine"
         << std::endl;
     }
     check_expected_x_after_y("(", "identifier");
@@ -146,10 +146,10 @@ void Parser::parse_subroutine(const std::string& subroutine_type) {
 
 void Parser::parse_param_list() {
     out_file << "\t\t<param_list>" << std::endl;
+    std::string name, type, kind = "ARG";
 
     int param_counter = 0;
-
-    while(tokenizer.type_exists(tokenizer.get_current_token()) || param_counter > 0) {
+    while(tokenizer.type_exists(cur_token) || param_counter > 0) {
 
         if (param_counter > 0) {
             check_expected_x_after_y(",", "identifier");
@@ -157,11 +157,14 @@ void Parser::parse_param_list() {
             query_tokenizer();
         }
 
-        out_file << "\t\t\t<keyword>" + tokenizer.get_current_token() + "</keyword>" << std::endl;
+
+        out_file << "\t\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
+        type = cur_token;
         query_tokenizer();
 
         check_token_type_x_after_y("IDENTIFIER", "type");
         out_file << "\t\t\t<identifier>" + tokenizer.get_current_token() + "</identifier>" << std::endl;
+        symbol_table.set_data(cur_token, type, kind);
         query_tokenizer();
         param_counter++;
 
@@ -174,17 +177,14 @@ void Parser::parse_param_list() {
 }
 
 void Parser::parse_subroutine_body() {
-    if (tokenizer.get_current_token() != "{") {
-        std::cerr << "Expected { after parameter list" << std::endl;
-        exit(0);
-    }
+    check_expected_x_after_y("{", "parameter list");
+
     out_file << "\t\t<symbol>{</symbol>" << std::endl;
     query_tokenizer();
 
    while (cur_token == "var") {
         parse_var_dec();
     }
-
     parse_statements();
 
     check_expected_x_after_y("}", "statement(s)");
@@ -196,6 +196,8 @@ void Parser::parse_subroutine_body() {
 void Parser::parse_var_dec() {
     out_file << "\t\t<varDec>" << std::endl;
 
+    std::string name, type, kind = "VAR";
+
     int variable_count = 0;
     while(cur_token == "var" || variable_count > 0) {
         out_file << "\t\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
@@ -203,10 +205,13 @@ void Parser::parse_var_dec() {
 
         check_type_exists();
         out_file << "\t\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
+        type = cur_token;
         query_tokenizer();
 
         check_token_type_x_after_y("IDENTIFIER", "type");
         out_file << "\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+        name = cur_token;
+        symbol_table.set_data(name, type, kind);
         query_tokenizer();
 
         variable_count++;
@@ -268,8 +273,11 @@ void Parser::parse_statements() {
 void Parser::parse_let_statement() {
     out_file << "\t\t\t<let_statement>" << std::endl;
     check_token_type_x_after_y("IDENTIFIER", "let statement");
-    out_file << "\t\t\t\t<identifier>" + tokenizer.get_current_token() + "</identifier>" << std::endl;
+    out_file << "\t\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+
     query_tokenizer();
+
+
 
     if (tokenizer.get_current_token() == "[") {
         out_file << "\t\t\t\t<symbol>[</symbol>" << std::endl;
@@ -394,6 +402,7 @@ void Parser::parse_do_statement() {
 }
 
 void Parser::parse_expression() {
+    std::string expression;
     out_file << "\t\t\t\t<expression>" << std::endl;
     parse_term();
 
@@ -402,7 +411,6 @@ void Parser::parse_expression() {
         query_tokenizer();
         parse_term();
     }
-
     out_file << "\t\t\t\t</expression>" << std::endl;
 }
 
@@ -537,6 +545,8 @@ bool Parser::is_array() {
     return true;
 }
 
+bool Parser::is_defined() {
+}
 
 // TODO replace all tokenizer.get_current_token() for cur_token
 // TODO replace all cerrs with exceptions

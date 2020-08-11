@@ -1,7 +1,7 @@
 #include "parser.h"
 #include <iostream>
 #include <cstdlib>
-
+#include "vm_writer.h"
 
 int main(int argc, char** argv) {
 
@@ -26,6 +26,12 @@ int main(int argc, char** argv) {
     out_file.open("/home/mke/projects/c++/jack_compiler/compiler/syntax_struct.xml");
 
     Parser parser(out_file, tokenizer);
+
+    std::ofstream vm_file;
+    out_file.open("/home/mke/projects/c++/jack_compiler/compiler/file.vm");
+    VM_Writer vm_writer(vm_file);
+
+
 
     file.close();
     out_file.close();

@@ -71,7 +71,7 @@ public:
     std::string get_current_token();
     std::string type(const std::string& token);
     static std::string keyword_type(const std::string& token);
-
+    static std::string to_upper(const std::string& token);
     static void symbol() {
         /**
          * returns symbol of current token. Only call if type() == SYMBOL

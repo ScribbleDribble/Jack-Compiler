@@ -10,7 +10,9 @@
 #include <string>
 #include <iostream>
 #include "tokenizer.h"
+#include "symbol_table.h"
 #include <map>
+#include "vm_writer.h"
 
 class Parser {
 
@@ -19,6 +21,7 @@ private:
     Tokenizer& tokenizer;
     std::string cur_token;
     std::string class_name;
+    Symbol_Table symbol_table;
 public:
 
     Parser(std::ofstream& out_file, Tokenizer& tokenizer): out_file(out_file), tokenizer(tokenizer)
@@ -62,4 +65,7 @@ public:
 
     // term detection helper functions
     bool is_array();
+
+    // vm writer auxiliary functions
+    bool is_defined();
 };

@@ -131,14 +131,17 @@ std::string Tokenizer::keyword_type(const std::string& token) {
     /**
      * Returns keyword of the current token. Only called if type() == KEYWORD
      */
-    std::string keyword;
+    return to_upper(token);
+}
+
+std::string Tokenizer::to_upper(const std::string& token) {
+    std::string s;
     for(char letter : token) {
         int ascii_val = static_cast<int>(letter) - 32;
         char character = static_cast<char>(ascii_val);
-        keyword += character;
+        s += character;
     }
-
-    return keyword;
+    return s;
 }
 
 void symbol() {

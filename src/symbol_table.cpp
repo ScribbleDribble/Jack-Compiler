@@ -4,31 +4,45 @@
 
 #include "symbol_table.h"
 void Symbol_Table::start_subroutine() {
+    free_subroutine();
     subroutine_scope.clear();
     arg_count = 0;
     var_count = 0;
 }
 
+void Symbol_Table::free_class() {
+    for (auto & it : class_scope) {
+        delete it.second;
+    }
+}
+
+void Symbol_Table::free_subroutine() {
+    for (auto& it : subroutine_scope) {
+        delete it.second;
+    }
+}
+
 void Symbol_Table::set_data(const std::string& name, const std::string& type, const std::string& kind) {
-    IdentifierData *identifier_data;
-    identifier_data->type = name;
+    auto *identifier_data = new IdentifierData;
+    identifier_data->type = type;
     identifier_data->kind = kind;
+
     if (kind == "ARG" || kind == "VAR") {
         subroutine_scope[name] = identifier_data;
-        if (type == "ARG") {
-            arg_count++;
+        if (kind == "ARG") {
+            identifier_data->index = arg_count++;
         }
         else {
-            var_count++;
+            identifier_data->index = var_count++;
         }
     }
     else {
         class_scope[name] = identifier_data;
-        if (type == "FIELD") {
-            field_count++;
+        if (kind == "FIELD") {
+            identifier_data->index = field_count++;
         }
         else {
-            static_count++;
+            identifier_data->index = static_count++;
         }
     }
 };
