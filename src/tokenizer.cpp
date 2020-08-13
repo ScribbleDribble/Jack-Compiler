@@ -184,5 +184,13 @@ int Tokenizer::get_keyword_val(const std::string& token) {
     return keyword_map[token];
 }
 
-
+std::vector<std::string> Tokenizer::get_line() {
+    std::queue<std::string> temp_queue = token_queue;
+    std::vector<std::string> tokens;
+    while (temp_queue.front() != ";" && temp_queue.front() != "}") {
+        tokens.push_back(temp_queue.front());
+        temp_queue.pop();
+    }
+    return tokens;
+}
 

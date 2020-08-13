@@ -22,9 +22,12 @@ private:
     std::string cur_token;
     std::string class_name;
     Symbol_Table symbol_table;
+    VM_Writer& vm_writer;
+    std::vector<std::string> expr_builder;
 public:
 
-    Parser(std::ofstream& out_file, Tokenizer& tokenizer): out_file(out_file), tokenizer(tokenizer)
+    Parser(std::ofstream& out_file, Tokenizer& tokenizer, VM_Writer& vm_writer): out_file(out_file),
+            tokenizer(tokenizer), vm_writer(vm_writer)
     {
         query_tokenizer();
         parse_class();
@@ -63,9 +66,13 @@ public:
     void check_type_exists();
     void check_op_exists(const std::string& op_token);
 
+
+
     // term detection helper functions
     bool is_array();
 
     // vm writer auxiliary functions
-    bool is_defined();
+
+    std::vector<std::string> get_expression(std::vector<std::string>& tokens);
+
 };

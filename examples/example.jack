@@ -6,11 +6,15 @@ class List {
     field int data, num, anotha_one;
     field List next;
 
+    method void render(int x, int y) {
+       return;
+    }
+
     /* Creates a new List object. */
 
     constructor List new(int car, List cdr) {
 
-        let data = car + truck() + airplane.get_speed(k, foo) + 2 + 99 + xyz + lmaoooo;
+        let data = car + render(data, num) + 2 + 99 + num + "ok";
         let next = cdr;
         return this;
     }

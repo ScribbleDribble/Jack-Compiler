@@ -45,7 +45,19 @@ void Symbol_Table::set_data(const std::string& name, const std::string& type, co
             identifier_data->index = static_count++;
         }
     }
-};
+}
+
+void Symbol_Table::set_function_data(const std::string& name, const std::string& kind) {
+    auto* identifier_data = new FunctionIdentifierData;
+    functions[name] = identifier_data;
+
+    if (kind == "method") {
+        identifier_data->index = method_count++;
+    }
+    else {
+        identifier_data->index = function_count++;
+    }
+}
 
 int Symbol_Table::get_static_count() const {
     return static_count;
@@ -81,6 +93,25 @@ int Symbol_Table::get_index(const std::string& identifier) {
     if (class_scope.count(identifier) > 0) {
         return class_scope[identifier]->index;
     }
-    return subroutine_scope[identifier]->index;
+    else if (subroutine_scope.count(identifier) > 0) {
+        return subroutine_scope[identifier]->index;
+    }
+
+    else {
+        return -1;
+    }
 }
 
+void Symbol_Table::set_temp_arg_count(int n_args) {
+    temp_n_args = n_args;
+}
+
+int Symbol_Table::get_temp_arg_count() {
+    int n_args = temp_n_args;
+    temp_n_args = 0;
+    return n_args;
+}
+
+bool Symbol_Table::is_declared(const std::string& identifier) {
+    return subroutine_scope.count(identifier) > 0 || functions.count(identifier) > 0 || class_scope.count(identifier);
+}

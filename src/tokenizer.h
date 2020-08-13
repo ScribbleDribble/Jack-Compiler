@@ -106,4 +106,6 @@ public:
     bool op_exists(const std::string& token) {
         return op_map.count(token) > 0;
     }
+    // obtains a line of code/text
+    std::vector<std::string> get_line();
 };

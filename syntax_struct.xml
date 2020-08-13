@@ -16,6 +16,27 @@
 		<symbol>;</symbol>
 	</class_var_dec>
 	<subroutine>
+		<keyword>method</keyword>
+		<keyword>void</keyword>
+		<identifier>render</identifier>
+		<symbol>(</symbol>
+		<param_list>
+			<keyword>int</keyword>
+			<identifier>x</identifier>
+			<symbol>,</symbol>
+			<keyword>int</keyword>
+			<identifier>y</identifier>
+		</param_list>
+		<symbol>)</symbol>
+		<symbol>{</symbol>
+		<statements>
+			<return_statement>
+				<symbol>;</symbol>
+			</return_statement>
+		</statements>
+		<symbol>}</symbol>
+	</subroutine>
+	<subroutine>
 		<keyword>constructor</keyword>
 		<keyword>new</keyword>
 		<symbol>(</symbol>
@@ -35,21 +56,15 @@
 				<expression>
 					<identifier>car</identifier>
 					<symbol>+</symbol>
-					<identifier>truck</identifier>
-					<symbol>(</symbol>
-					<symbol>)</symbol>
-					<symbol>+</symbol>
-					<identifier>airplane</identifier>
-					<symbol>.</symbol>
-					<identifier>get_speed</identifier>
+					<identifier>render</identifier>
 					<symbol>(</symbol>
 					<expression_list>
 				<expression>
-					<identifier>k</identifier>
+					<identifier>data</identifier>
 				</expression>
 					<symbol>,</symbol>
 				<expression>
-					<identifier>foo</identifier>
+					<identifier>num</identifier>
 				</expression>
 					<symbol>)</symbol>
 				</expression_list>
@@ -58,9 +73,9 @@
 					<symbol>+</symbol>
 					<INT_CONST>99</INT_CONST>
 					<symbol>+</symbol>
-					<identifier>xyz</identifier>
+					<identifier>num</identifier>
 					<symbol>+</symbol>
-					<identifier>lmaoooo</identifier>
+					<INT_CONST>0ok</INT_CONST>
 				</expression>
 				<symbol>;</symbol>
 			</let_statement>
@@ -155,7 +170,7 @@
 	</subroutine>
 </class>
 	<subroutine>
-		<keyword>void</keyword>
+		<keyword>function</keyword>
 		<keyword>void</keyword>
 		<identifier>create235</identifier>
 		<symbol>(</symbol>

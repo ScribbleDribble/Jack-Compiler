@@ -22,16 +22,15 @@ int main(int argc, char** argv) {
         file.clear();
     }
 
+
+    std::ofstream vm_file;
+    vm_file.open("/home/mke/projects/c++/jack_compiler/compiler/intermediate.vm");
+    VM_Writer vm_writer(vm_file);
+
     std::ofstream out_file;
     out_file.open("/home/mke/projects/c++/jack_compiler/compiler/syntax_struct.xml");
 
-    Parser parser(out_file, tokenizer);
-
-    std::ofstream vm_file;
-    out_file.open("/home/mke/projects/c++/jack_compiler/compiler/file.vm");
-    VM_Writer vm_writer(vm_file);
-
-
+    Parser parser(out_file, tokenizer, vm_writer);
 
     file.close();
     out_file.close();
