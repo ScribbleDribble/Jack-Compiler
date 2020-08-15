@@ -74,5 +74,8 @@ public:
     // vm writer auxiliary functions
 
     std::vector<std::string> get_expression(std::vector<std::string>& tokens);
+    void expression_writer(std::vector<std::string> expression);
+    void expression_list_writer(std::vector<std::string> expression, int index, int arg_count);
+    std::string get_segment(std::string token);
 
 };

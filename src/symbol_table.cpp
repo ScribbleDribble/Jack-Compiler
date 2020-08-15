@@ -47,7 +47,7 @@ void Symbol_Table::set_data(const std::string& name, const std::string& type, co
     }
 }
 
-void Symbol_Table::set_function_data(const std::string& name, const std::string& kind) {
+void Symbol_Table::set_function_data(const std::string& name, const std::string& kind, int n_args) {
     auto* identifier_data = new FunctionIdentifierData;
     functions[name] = identifier_data;
 
@@ -57,6 +57,8 @@ void Symbol_Table::set_function_data(const std::string& name, const std::string&
     else {
         identifier_data->index = function_count++;
     }
+    identifier_data->n_args = n_args;
+    identifier_data->kind = kind;
 }
 
 int Symbol_Table::get_static_count() const {
@@ -114,4 +116,12 @@ int Symbol_Table::get_temp_arg_count() {
 
 bool Symbol_Table::is_declared(const std::string& identifier) {
     return subroutine_scope.count(identifier) > 0 || functions.count(identifier) > 0 || class_scope.count(identifier);
+}
+
+bool Symbol_Table::is_func(const std::string& identifier) {
+    return functions.count(identifier) > 0;
+}
+
+int Symbol_Table::get_arg_count(const std::string& identifier) {
+    return functions[identifier]->n_args;
 }

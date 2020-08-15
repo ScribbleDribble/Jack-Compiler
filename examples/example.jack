@@ -13,9 +13,9 @@ class List {
     /* Creates a new List object. */
 
     constructor List new(int car, List cdr) {
-
-        let data = car + render(data, num) + 2 + 99 + num + "ok";
         let next = cdr;
+        let data = car + render(data, num) + 2 + 99 + num + "ok";
+
         return this;
     }
     /* Creates a new List object. some more comments */

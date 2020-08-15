@@ -51,6 +51,14 @@
 		<symbol>{</symbol>
 		<statements>
 			<let_statement>
+				<identifier>next</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>cdr</identifier>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+			<let_statement>
 				<identifier>data</identifier>
 				<symbol>=</symbol>
 				<expression>
@@ -76,14 +84,6 @@
 					<identifier>num</identifier>
 					<symbol>+</symbol>
 					<INT_CONST>0ok</INT_CONST>
-				</expression>
-				<symbol>;</symbol>
-			</let_statement>
-			<let_statement>
-				<identifier>next</identifier>
-				<symbol>=</symbol>
-				<expression>
-					<identifier>cdr</identifier>
 				</expression>
 				<symbol>;</symbol>
 			</let_statement>

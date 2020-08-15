@@ -40,3 +40,5 @@ void VM_Writer::write_return() {
     out_file << "return" << std::endl;
 }
 
+
+

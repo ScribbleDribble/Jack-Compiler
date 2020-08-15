@@ -26,6 +26,10 @@ public:
     void write_call(const std::string& name, int n_args);
     void write_function(const std::string& name, int n_locals);
     void write_return();
+
+    void operator <<(const std::string& s)  {
+        out_file << s;
+    }
 };
 
 

@@ -45,7 +45,7 @@ public:
 
     void start_subroutine();
     void set_data(const std::string& name, const std::string& type, const std::string& kind);
-    void set_function_data(const std::string& name, const std::string& kind);
+    void set_function_data(const std::string& name, const std::string& kind, int n_args);
     int get_static_count() const;
     int get_field_count() const;
     int get_arg_count() const;
@@ -58,8 +58,10 @@ public:
     // temporarily hold data on how many arguments a subroutine has
     void set_temp_arg_count(int n_args);
     int get_temp_arg_count();
+    int get_arg_count(const std::string& identifier);
 
     bool is_declared(const std::string& identifier);
+    bool is_func(const std::string& identifier);
 };
 
 
