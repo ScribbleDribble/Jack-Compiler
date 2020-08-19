@@ -13,6 +13,8 @@
 #include "symbol_table.h"
 #include <map>
 #include "vm_writer.h"
+#include <stdexcept>
+#include <stack>
 
 class Parser {
 
@@ -20,10 +22,12 @@ private:
     std::ofstream& out_file;
     Tokenizer& tokenizer;
     std::string cur_token;
+    std::string prev_token;
     std::string class_name;
     Symbol_Table symbol_table;
     VM_Writer& vm_writer;
-    std::vector<std::string> expr_builder;
+    std::string cur_subroutine_type;
+
 public:
 
     Parser(std::ofstream& out_file, Tokenizer& tokenizer, VM_Writer& vm_writer): out_file(out_file),
@@ -39,7 +43,7 @@ public:
 
     void parse_class();
     void parse_class_var_dec();
-    void parse_subroutine(const std::string& subroutine_type);
+    void parse_subroutine();
     void parse_param_list();
     void parse_subroutine_body();
     void parse_var_dec();
@@ -73,9 +77,5 @@ public:
 
     // vm writer auxiliary functions
 
-    std::vector<std::string> get_expression(std::vector<std::string>& tokens);
-    void expression_writer(std::vector<std::string> expression);
-    void expression_list_writer(std::vector<std::string> expression, int index, int arg_count);
-    std::string get_segment(std::string token);
-
+    void expression_writer(const std::string& token);
 };

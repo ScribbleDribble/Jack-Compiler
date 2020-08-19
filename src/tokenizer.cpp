@@ -10,7 +10,7 @@ void Tokenizer::get_tokens() {
 
     while (file_stream.get(character)) {
 
-        if (character == '\n' || character == '\t')
+        if (character == '\n' || character == '\t' || character == '\r')
             continue;
 
        if (symbol_map.count(character) > 0) {

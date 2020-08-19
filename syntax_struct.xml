@@ -18,7 +18,7 @@
 	<subroutine>
 		<keyword>method</keyword>
 		<keyword>void</keyword>
-		<identifier>render</identifier>
+		<identifier>g</identifier>
 		<symbol>(</symbol>
 		<param_list>
 			<keyword>int</keyword>
@@ -26,10 +26,75 @@
 			<symbol>,</symbol>
 			<keyword>int</keyword>
 			<identifier>y</identifier>
+			<symbol>,</symbol>
+			<keyword>int</keyword>
+			<identifier>z</identifier>
 		</param_list>
 		<symbol>)</symbol>
 		<symbol>{</symbol>
 		<statements>
+			<let_statement>
+				<identifier>data</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>x</identifier>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+			<return_statement>
+				<symbol>;</symbol>
+			</return_statement>
+		</statements>
+		<symbol>}</symbol>
+	</subroutine>
+	<subroutine>
+		<keyword>method</keyword>
+		<keyword>void</keyword>
+		<identifier>render</identifier>
+		<symbol>(</symbol>
+		<param_list>
+			<keyword>int</keyword>
+			<identifier>p</identifier>
+			<symbol>,</symbol>
+			<keyword>int</keyword>
+			<identifier>q</identifier>
+		</param_list>
+		<symbol>)</symbol>
+		<symbol>{</symbol>
+		<varDec>
+			<keyword>var</keyword>
+			<keyword>int</keyword>
+			<identifier>dunno</identifier>
+			<symbol>;</symbol>
+		</varDec>
+		<statements>
+			<let_statement>
+				<identifier>x</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>p</identifier>
+					<symbol>+</symbol>
+					<identifier>g</identifier>
+					<symbol>(</symbol>
+					<expression_list>
+				<expression>
+					<identifier>next</identifier>
+				</expression>
+					<symbol>,</symbol>
+				<expression>
+					<identifier>data</identifier>
+				</expression>
+					<symbol>,</symbol>
+				<expression>
+					<identifier>dunno</identifier>
+				</expression>
+					<symbol>)</symbol>
+				</expression_list>
+					<symbol>*</symbol>
+					<INT_CONST>5</INT_CONST>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
 			<return_statement>
 				<symbol>;</symbol>
 			</return_statement>
@@ -68,7 +133,7 @@
 					<symbol>(</symbol>
 					<expression_list>
 				<expression>
-					<identifier>data</identifier>
+					<INT_CONST>2</INT_CONST>
 				</expression>
 					<symbol>,</symbol>
 				<expression>

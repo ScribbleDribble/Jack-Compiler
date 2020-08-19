@@ -17,6 +17,7 @@ int main(int argc, char** argv) {
 
     for (int i = 1; i < argc; i++) {
         std::string file_path =  exe_rel_path.substr(0, exe_rel_path.length() - 5) + argv[i];
+        std::cout << "Compiling file: " + file_path << std::endl;
         file.open(file_path, std::ifstream::in);
         tokenizer.get_tokens();
         file.clear();

@@ -29,7 +29,7 @@ void VM_Writer::write_if(const std::string &label) {
 }
 
 void VM_Writer::write_call(const std::string &name, int n_args) {
-    out_file << "call " + name +  std::to_string(n_args)  << std::endl;
+    out_file << "call " + name +  " " + std::to_string(n_args)  << std::endl;
 }
 
 void VM_Writer::write_function(const std::string &name, int n_locals) {

@@ -32,6 +32,8 @@ private:
     // constructors are not to be stored
     std::map<std::string, FunctionIdentifierData*> functions;
 
+    void free_subroutine();
+
     int static_count = 0;
     int field_count = 0;
     int var_count = 0;
@@ -54,7 +56,6 @@ public:
     std::string get_type(const std::string& identifier);
     int get_index(const std::string& identifier);
     void free_class();
-    void free_subroutine();
     // temporarily hold data on how many arguments a subroutine has
     void set_temp_arg_count(int n_args);
     int get_temp_arg_count();

@@ -6,7 +6,14 @@ class List {
     field int data, num, anotha_one;
     field List next;
 
-    method void render(int x, int y) {
+    method void g(int x, int y, int z) {
+        let data = x;
+        return;
+    }
+
+    method void render(int p, int q) {
+       var int dunno;
+       let x = p + g(next,data,dunno) * 5;
        return;
     }
 
@@ -14,7 +21,7 @@ class List {
 
     constructor List new(int car, List cdr) {
         let next = cdr;
-        let data = car + render(data, num) + 2 + 99 + num + "ok";
+        let data = car + render(2, num) + 2 + 99 + num + "ok";
 
         return this;
     }

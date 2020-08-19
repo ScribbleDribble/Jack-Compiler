@@ -1,28 +1,8 @@
 #include "parser.h"
 
-std::string Parser::get_segment(std::string token) {
-    if (!symbol_table.is_declared(token)) {
-        if (tokenizer.type(token) == "INT_CONST"){
-            return "constant";
-        }
-        return "none";
-    }
-    else {
-        if (symbol_table.get_kind(token) == "FIELD" || symbol_table.get_kind(token) == "STATIC") {
-            return "this";
-        }
-        else if (symbol_table.get_kind(token) == "ARG") {
-            return "argument";
-        }
-        else {
-            return "local";
-        }
-    }
-}
-
-
 void Parser::query_tokenizer() {
     if (tokenizer.contains_more()) {
+        prev_token = cur_token;
         tokenizer.advance();
         cur_token =  tokenizer.get_current_token();
     }
@@ -55,9 +35,9 @@ void Parser::parse_class() {
     }
 
     while (cur_token == "constructor"  || cur_token == "function" || cur_token == "method") {
-        const std::string subroutine_type = tokenizer.get_current_token();
+        cur_subroutine_type = cur_token;
         query_tokenizer();
-        parse_subroutine(subroutine_type);
+        parse_subroutine();
     }
 
     check_expected_x_after_y("}", "class definition");
@@ -65,13 +45,12 @@ void Parser::parse_class() {
     query_tokenizer();
 
     while (cur_token == "function") {
+        cur_subroutine_type = "function";
         query_tokenizer();
         symbol_table.start_subroutine();
-        symbol_table.free_subroutine();
-        parse_subroutine("function");
+        parse_subroutine();
     }
 
-    symbol_table.free_subroutine();
     symbol_table.free_class();
 }
 
@@ -121,14 +100,14 @@ void Parser::parse_class_var_dec() {
     out_file << "\t</class_var_dec>" << std::endl;
 }
 
-void Parser::parse_subroutine(const std::string& subroutine_type) {
+void Parser::parse_subroutine() {
     out_file << "\t<subroutine>" << std::endl;
 
     std::string name;
 
-    out_file << "\t\t<keyword>" + subroutine_type + "</keyword>" << std::endl;
+    out_file << "\t\t<keyword>" + cur_subroutine_type + "</keyword>" << std::endl;
 
-    if (subroutine_type == "constructor") {
+    if (cur_subroutine_type == "constructor") {
         if (tokenizer.get_current_token() != class_name) {
             std::cerr << "Invalid constructor identifier" << std::endl;
             exit(0);
@@ -158,11 +137,11 @@ void Parser::parse_subroutine(const std::string& subroutine_type) {
     out_file << "\t\t<symbol>(</symbol>" << std::endl;
     query_tokenizer();
 
-    if (subroutine_type == "constructor") {
+    if (cur_subroutine_type == "constructor") {
         parse_param_list();
         vm_writer.write_function(class_name+"."+name, symbol_table.get_temp_arg_count());
     }
-    else if (subroutine_type == "function") {
+    else if (cur_subroutine_type == "function") {
         parse_param_list();
         int n_args = symbol_table.get_temp_arg_count();
         vm_writer.write_function(name, n_args);
@@ -174,6 +153,9 @@ void Parser::parse_subroutine(const std::string& subroutine_type) {
         int n_args = symbol_table.get_temp_arg_count();
         symbol_table.set_function_data(name, "method", n_args);
         vm_writer.write_function(class_name + "." + name, n_args + 1);
+        vm_writer.write_push("argument", 0);
+        vm_writer.write_pop("this", 0);
+
     }
 
 
@@ -184,14 +166,13 @@ void Parser::parse_subroutine(const std::string& subroutine_type) {
     parse_subroutine_body();
 
     out_file << "\t</subroutine>" << std::endl;
+    symbol_table.start_subroutine();
 }
 
 void Parser::parse_param_list() {
     out_file << "\t\t<param_list>" << std::endl;
     std::string name, type, kind = "ARG";
 
-    vm_writer.write_push("argument", 0);
-    vm_writer.write_pop("this", 0);
 
     int param_counter = 0;
     while(tokenizer.type_exists(cur_token) || param_counter > 0) {
@@ -319,11 +300,9 @@ void Parser::parse_let_statement() {
     out_file << "\t\t\t<let_statement>" << std::endl;
     check_token_type_x_after_y("IDENTIFIER", "let statement");
     out_file << "\t\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
-    std::vector<std::string> expr_tokens = tokenizer.get_line();
-    std::vector<std::string>expression = get_expression(expr_tokens);
+
 
     query_tokenizer();
-    expression_writer(expression);
     if (tokenizer.get_current_token() == "[") {
         out_file << "\t\t\t\t<symbol>[</symbol>" << std::endl;
         query_tokenizer();
@@ -407,7 +386,6 @@ void Parser::parse_while_statement() {
     query_tokenizer();
 
     parse_statements();
-    expr_builder.clear();
 
     check_expected_x_after_y("}", "statements");
     out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
@@ -424,11 +402,11 @@ void Parser::parse_return_statement() {
     out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
     query_tokenizer();
 
+    vm_writer.write_return();
     out_file << "\t\t\t</return_statement>" << std::endl;
 }
 
 void Parser::parse_do_statement() {
-    // TODO test
     out_file << "\t\t\t<do_statement>" << std::endl;
 
     check_token_type_x_after_y("IDENTIFIER", "do statement");
@@ -447,14 +425,17 @@ void Parser::parse_do_statement() {
 
 void Parser::parse_expression() {
     out_file << "\t\t\t\t<expression>" << std::endl;
+    expression_writer(cur_token);
     parse_term();
 
     while (tokenizer.op_exists(cur_token)) {
         out_file << "\t\t\t\t\t<symbol>" + cur_token << "</symbol>" << std::endl;
-        std::string temp_symbol = cur_token;
-        expr_builder.push_back(cur_token);
+        std::string symbol = cur_token;
+
         query_tokenizer();
+        expression_writer(cur_token);
         parse_term();
+        expression_writer(symbol);
     }
 
     out_file << "\t\t\t\t</expression>" << std::endl;
@@ -465,11 +446,6 @@ void Parser::parse_term() {
     std::string cur_token_type = tokenizer.type(cur_token);
     if (cur_token_type == "IDENTIFIER") {
         out_file << "\t\t\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
-
-        if (symbol_table.is_declared(cur_token))
-        {
-            expr_builder.push_back(cur_token);
-        }
 
         query_tokenizer();
         if (is_array())
@@ -483,7 +459,6 @@ void Parser::parse_term() {
     else if (cur_token_type == "STRING_CONST" || cur_token_type == "INT_CONST" ||
                                                                             keyword_constant_map.count(cur_token) > 0) {
         if (cur_token_type == "INT_CONST") {
-            expr_builder.push_back(cur_token);
         }
         out_file << "\t\t\t\t\t<" + cur_token_type +  ">" +
                     cur_token + "</" + cur_token_type + ">" << std::endl;
@@ -507,12 +482,15 @@ void Parser::parse_term() {
 
 void Parser::parse_subroutine_call() {
     // only to be called once we know Tokenizer::type() == "IDENTIFIER"
+
     if (tokenizer.get_current_token() == ".") {
+        std::string type_name = prev_token;
         out_file << "\t\t\t\t\t<symbol>.</symbol>" << std::endl;
         query_tokenizer();
 
         check_token_type_x_after_y("IDENTIFIER", ".");
         out_file << "\t\t\t\t\t<identifier>" + cur_token + "</identifier>" << std::endl;
+        std::string method_name = cur_token;
         query_tokenizer();
 
         check_expected_x_after_y("(", ".");
@@ -521,6 +499,7 @@ void Parser::parse_subroutine_call() {
 
         if (cur_token != ")") {
             parse_expression_list();
+            vm_writer.write_call(type_name + "." + method_name, symbol_table.get_temp_arg_count());
         }
         else {
             out_file << "\t\t\t\t\t<symbol>)</symbol>" << std::endl;
@@ -528,11 +507,13 @@ void Parser::parse_subroutine_call() {
         }
     }
     else if (cur_token == "(") {
+        std::string method_name = prev_token;
         out_file << "\t\t\t\t\t<symbol>(</symbol>" << std::endl;
         query_tokenizer();
 
         if (cur_token != ")") {
             parse_expression_list();
+            vm_writer.write_call(method_name, symbol_table.get_arg_count(method_name) + 1);
         }
         else {
             check_expected_x_after_y(")", "(");
@@ -544,15 +525,19 @@ void Parser::parse_subroutine_call() {
 
 void Parser::parse_expression_list() {
     out_file << "\t\t\t\t\t<expression_list>" << std::endl;
+    // for recording arg counts of
+    int arg_count = 0;
     parse_expression();
+    arg_count++;
 
     while (cur_token == ",") {
         out_file << "\t\t\t\t\t<symbol>,</symbol>" << std::endl;
         query_tokenizer();
 
         parse_expression();
+        arg_count++;
     }
-
+    symbol_table.set_temp_arg_count(arg_count);
     check_expected_x_after_y(")", "identifier");
     out_file << "\t\t\t\t\t<symbol>)</symbol>" << std::endl;
     out_file << "\t\t\t\t</expression_list>" << std::endl;
@@ -603,90 +588,36 @@ bool Parser::is_array() {
     return true;
 }
 
-std::vector<std::string> Parser::get_expression(std::vector<std::string>& tokens) {
-    std::vector<std::string> expr;
-    for (std::string& token : tokens) {
-        if (token == "="){
-            continue;
-        }
-        else if (symbol_table.is_declared(token) || tokenizer.op_exists(token) ||
-                    tokenizer.type(token) == "INT_CONST" || tokenizer.type(token) == "STRING_CONST") {
-            expr.push_back(token);
-        }
+void Parser::expression_writer(const std::string& token) {
+
+    if (tokenizer.op_exists(token)) {
+        vm_writer.write_arithmetic(token);
     }
-    return expr;
-}
+    else if ((symbol_table.is_declared(token) || tokenizer.type(token) == "INT_CONST") && !symbol_table.is_func(token)) {
 
-void Parser::expression_writer(std::vector<std::string> expression) {
-
-    if (expression.size() == 1) {
-    // base case stuff
-    }
-
-    std::string last_op;
-    int i = 0;
-    for (auto it = expression.begin(); it != expression.end(); it++) {
-        if (tokenizer.type(*it) == "SYMBOL") {
-            if (!last_op.empty()) {
-                vm_writer.write_arithmetic(last_op);
+        if (symbol_table.is_declared(token)) {
+            if (symbol_table.get_kind(token) == "FIELD") {
+                vm_writer.write_push("this", symbol_table.get_index(token));
             }
-            last_op = *it;
-        }
-        else if (symbol_table.is_func(*it)) {
-            expression_list_writer(expression, i+1,symbol_table.get_arg_count(*it));
-            vm_writer.write_call(*it, symbol_table.get_arg_count(*it));
-            // having scanned through the expression list in another function, this current method needs to catch up
-            it += symbol_table.get_arg_count(*it);
-        }
-
-        else if (symbol_table.is_declared(*it) || tokenizer.type(*it) == "INT_CONST") {
-
-            if (symbol_table.is_declared(*it)) {
-                vm_writer.write_push(*it, symbol_table.get_index(*it));
+            else if (symbol_table.get_kind(token) == "STATIC") {
+                vm_writer.write_push("static", symbol_table.get_index(token));
             }
-            else {
-                vm_writer.write_push("constant", std::stoi(*it));
+            else if (symbol_table.get_kind(token) == "ARG") {
+                if (cur_subroutine_type == "method") {
+                    vm_writer.write_push("ARG", symbol_table.get_index(token) + 1);
+                }
+                else {
+                    vm_writer.write_push("ARG", symbol_table.get_index(token));
+                }
             }
-            if (!last_op.empty()) {
-                vm_writer.write_arithmetic(last_op);
-                last_op = "";
-            }
-
-        }
-        i++;
-    }
-
-
-
-}
-
-void Parser::expression_list_writer(std::vector<std::string> expression, int index, int arg_size) {
-
-    std::string last_op;
-    int i = 0;
-    for (auto it = expression.begin() + index; it != expression.begin() + index + arg_size; it++) {
-        if (tokenizer.type(*it) == "SYMBOL") {
-            last_op = expression[index];
-        }
-        else if (symbol_table.is_func(*it)) {
-            expression_list_writer(expression, i+1, symbol_table.get_arg_count(*it));
-        }
-
-        else if (symbol_table.is_declared(*it)) {
-            vm_writer.write_push(*it, symbol_table.get_index(*it));
-            if (!last_op.empty()) {
-                vm_writer.write_arithmetic(last_op);
-                last_op = "";
+            else if (symbol_table.get_kind(token) == "VAR") {
+                vm_writer.write_push("local", symbol_table.get_index(token));
             }
         }
-        i++;
+        else {
+            vm_writer.write_push("constant", std::stoi(token));
+        }
     }
 }
-
-
-
-//void Parser::expression_code_gen(const std::string& expression) {
-
-
 // TODO replace all tokenizer.get_current_token() for cur_token
 // TODO replace all cerrs with exceptions

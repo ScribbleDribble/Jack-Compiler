@@ -115,7 +115,7 @@ int Symbol_Table::get_temp_arg_count() {
 }
 
 bool Symbol_Table::is_declared(const std::string& identifier) {
-    return subroutine_scope.count(identifier) > 0 || functions.count(identifier) > 0 || class_scope.count(identifier);
+    return subroutine_scope.count(identifier) > 0 || is_func(identifier)|| class_scope.count(identifier);
 }
 
 bool Symbol_Table::is_func(const std::string& identifier) {
