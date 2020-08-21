@@ -72,23 +72,6 @@ public:
     std::string type(const std::string& token);
     static std::string keyword_type(const std::string& token);
     static std::string to_upper(const std::string& token);
-    static void symbol() {
-        /**
-         * returns symbol of current token. Only call if type() == SYMBOL
-         */
-    }
-
-    static void identifier() {
-        /**
-         * returns the identifier of the current token. Only call if type() == IDENTIFIER
-         */
-    }
-
-    static void int_value() {
-        /**
-         * returns integer value of the current token. Only call if type() == INT_CONST
-         */
-    }
 
     // '_' prefix is attached to every string in program text to separate it from identifiers
     std::string string_val(const std::string& token);
@@ -106,6 +89,4 @@ public:
     bool op_exists(const std::string& token) {
         return op_map.count(token) > 0;
     }
-    // obtains a line of code/text
-    std::vector<std::string> get_line();
 };

@@ -6,11 +6,17 @@
 #define JACK_COMPILER_VM_WRITER_H
 #include <iostream>
 #include <fstream>
-
+#include <map>
 
 class VM_Writer {
 private:
     std::ofstream& out_file;
+    std::map<std::string, std::string> op_map = { {"+", "add"}, {"-", "sub"},
+                                                  {"*", "call Math.multiply 2"}, {"/", "call Math.divide 2"},
+                                                  {">", "gt"}, {"<", "lt"}, {"&", "and"},
+                                                  {"=", "eq"}, {"|", "or"}, {"~", "not"}};
+    std::string translate_operator(const std::string& command);
+
 public:
 
     VM_Writer(std::ofstream& out_file): out_file(out_file) {

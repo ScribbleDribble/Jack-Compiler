@@ -14,7 +14,6 @@
 #include <map>
 #include "vm_writer.h"
 #include <stdexcept>
-#include <stack>
 
 class Parser {
 
@@ -28,6 +27,7 @@ private:
     VM_Writer& vm_writer;
     std::string cur_subroutine_type;
 
+    std::string get_segment(const std::string& token);
 public:
 
     Parser(std::ofstream& out_file, Tokenizer& tokenizer, VM_Writer& vm_writer): out_file(out_file),

@@ -13,7 +13,7 @@ class List {
 
     method void render(int p, int q) {
        var int dunno;
-       let x = p + g(next,data,dunno) * 5;
+       let data = p + g(next,data,dunno) * 5;
        return;
     }
 

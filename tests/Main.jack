@@ -4,10 +4,10 @@
 // File name: projects/11/Seven/Main.jack
 
 /**
- * Computes the value of 1 + (2 + 3) and prints the result
- * at the top-left of the screen.
+ * Computes the value of 1 + (2 * 3) and prints the result
+ * at the top-left of the screen.  
  */
-class Seven {
+class OK {
 
    function void main() {
       do Output.printInt(1 + (2 * 3));

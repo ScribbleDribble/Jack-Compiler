@@ -41,6 +41,7 @@ private:
     int method_count = 0;
     int function_count = 0;
     int temp_n_args = 0;
+    int if_count = 0;
 public:
 
     Symbol_Table() = default;
@@ -52,6 +53,8 @@ public:
     int get_field_count() const;
     int get_arg_count() const;
     int get_var_count() const;
+    int get_if_count() const;
+    void increment_if_count();
     std::string get_kind(const std::string& identifier);
     std::string get_type(const std::string& identifier);
     int get_index(const std::string& identifier);

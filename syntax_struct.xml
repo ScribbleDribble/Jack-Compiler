@@ -1,202 +1,175 @@
 <class>
-	<identifier>List</identifier>
+	<identifier>Main</identifier>
 	<symbol>{</symbol>
-	<class_var_dec>
-		<keyword>field</keyword>
-		<keyword>int</keyword>
-		<identifier>data</identifier>
-		<identifier>num</identifier>
-		<identifier>anotha_one</identifier>
-		<symbol>;</symbol>
-	</class_var_dec>
-	<class_var_dec>
-		<keyword>field</keyword>
-		<keyword>List</keyword>
-		<identifier>next</identifier>
-		<symbol>;</symbol>
-	</class_var_dec>
 	<subroutine>
-		<keyword>method</keyword>
+		<keyword>function</keyword>
 		<keyword>void</keyword>
-		<identifier>g</identifier>
+		<identifier>main</identifier>
 		<symbol>(</symbol>
 		<param_list>
-			<keyword>int</keyword>
-			<identifier>x</identifier>
-			<symbol>,</symbol>
-			<keyword>int</keyword>
-			<identifier>y</identifier>
-			<symbol>,</symbol>
-			<keyword>int</keyword>
-			<identifier>z</identifier>
-		</param_list>
-		<symbol>)</symbol>
-		<symbol>{</symbol>
-		<statements>
-			<let_statement>
-				<identifier>data</identifier>
-				<symbol>=</symbol>
-				<expression>
-					<identifier>x</identifier>
-				</expression>
-				<symbol>;</symbol>
-			</let_statement>
-			<return_statement>
-				<symbol>;</symbol>
-			</return_statement>
-		</statements>
-		<symbol>}</symbol>
-	</subroutine>
-	<subroutine>
-		<keyword>method</keyword>
-		<keyword>void</keyword>
-		<identifier>render</identifier>
-		<symbol>(</symbol>
-		<param_list>
-			<keyword>int</keyword>
-			<identifier>p</identifier>
-			<symbol>,</symbol>
-			<keyword>int</keyword>
-			<identifier>q</identifier>
 		</param_list>
 		<symbol>)</symbol>
 		<symbol>{</symbol>
 		<varDec>
 			<keyword>var</keyword>
 			<keyword>int</keyword>
-			<identifier>dunno</identifier>
+			<identifier>value</identifier>
 			<symbol>;</symbol>
-		</varDec>
 		<statements>
-			<let_statement>
-				<identifier>x</identifier>
-				<symbol>=</symbol>
-				<expression>
-					<identifier>p</identifier>
-					<symbol>+</symbol>
-					<identifier>g</identifier>
+			<do_statement>
+				<identifier>Main</identifier>
+					<symbol>.</symbol>
+					<identifier>fillMemory</identifier>
 					<symbol>(</symbol>
 					<expression_list>
 				<expression>
-					<identifier>next</identifier>
+					<INT_CONST>8001</INT_CONST>
 				</expression>
 					<symbol>,</symbol>
 				<expression>
-					<identifier>data</identifier>
+					<INT_CONST>16</INT_CONST>
 				</expression>
 					<symbol>,</symbol>
 				<expression>
-					<identifier>dunno</identifier>
+					<symbol>-</symbol>
+					<INT_CONST>1</INT_CONST>
 				</expression>
 					<symbol>)</symbol>
 				</expression_list>
-					<symbol>*</symbol>
-					<INT_CONST>5</INT_CONST>
-				</expression>
 				<symbol>;</symbol>
-			</let_statement>
-			<return_statement>
-				<symbol>;</symbol>
-			</return_statement>
-		</statements>
-		<symbol>}</symbol>
-	</subroutine>
-	<subroutine>
-		<keyword>constructor</keyword>
-		<keyword>new</keyword>
-		<symbol>(</symbol>
-		<param_list>
-			<keyword>int</keyword>
-			<identifier>car</identifier>
-			<symbol>,</symbol>
-			<keyword>List</keyword>
-			<identifier>cdr</identifier>
-		</param_list>
-		<symbol>)</symbol>
-		<symbol>{</symbol>
-		<statements>
+			</do_statement>
 			<let_statement>
-				<identifier>next</identifier>
+				<identifier>value</identifier>
 				<symbol>=</symbol>
 				<expression>
-					<identifier>cdr</identifier>
-				</expression>
-				<symbol>;</symbol>
-			</let_statement>
-			<let_statement>
-				<identifier>data</identifier>
-				<symbol>=</symbol>
-				<expression>
-					<identifier>car</identifier>
-					<symbol>+</symbol>
-					<identifier>render</identifier>
+					<identifier>Memory</identifier>
+					<symbol>.</symbol>
+					<identifier>peek</identifier>
 					<symbol>(</symbol>
 					<expression_list>
 				<expression>
-					<INT_CONST>2</INT_CONST>
-				</expression>
-					<symbol>,</symbol>
-				<expression>
-					<identifier>num</identifier>
+					<INT_CONST>8000</INT_CONST>
 				</expression>
 					<symbol>)</symbol>
 				</expression_list>
-					<symbol>+</symbol>
-					<INT_CONST>2</INT_CONST>
-					<symbol>+</symbol>
-					<INT_CONST>99</INT_CONST>
-					<symbol>+</symbol>
-					<identifier>num</identifier>
-					<symbol>+</symbol>
-					<INT_CONST>0ok</INT_CONST>
 				</expression>
 				<symbol>;</symbol>
 			</let_statement>
-			<return_statement>
+			<do_statement>
+				<identifier>Main</identifier>
+					<symbol>.</symbol>
+					<identifier>convert</identifier>
+					<symbol>(</symbol>
+					<expression_list>
 				<expression>
-					<KEYWORD>this</KEYWORD>
+					<identifier>value</identifier>
 				</expression>
+					<symbol>)</symbol>
+				</expression_list>
+				<symbol>;</symbol>
+			</do_statement>
+			<return_statement>
 				<symbol>;</symbol>
 			</return_statement>
 		</statements>
 		<symbol>}</symbol>
 	</subroutine>
 	<subroutine>
-		<keyword>method</keyword>
+		<keyword>function</keyword>
 		<keyword>void</keyword>
-		<identifier>dispose</identifier>
+		<identifier>convert</identifier>
 		<symbol>(</symbol>
 		<param_list>
 			<keyword>int</keyword>
-			<identifier>name</identifier>
-			<symbol>,</symbol>
-			<keyword>int</keyword>
-			<identifier>price</identifier>
+			<identifier>value</identifier>
 		</param_list>
 		<symbol>)</symbol>
 		<symbol>{</symbol>
 		<varDec>
 			<keyword>var</keyword>
-			<keyword>char</keyword>
-			<identifier>key</identifier>
-			<symbol>;</symbol>
+			<keyword>int</keyword>
+			<identifier>mask</identifier>
+		<identifier>position</identifier>
 		</varDec>
 		<varDec>
 			<keyword>var</keyword>
-			<keyword>char</keyword>
-			<identifier>key2</identifier>
+			<keyword>boolean</keyword>
+			<identifier>loop</identifier>
 			<symbol>;</symbol>
-		</varDec>
+		<statements>
+			<let_statement>
+				<identifier>loop</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<KEYWORD>true</KEYWORD>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+			<while_statement>
+				<symbol>(</symbol>
+				<expression>
+					<identifier>loop</identifier>
+				</expression>
+				<symbol>)</symbol>
+				<symbol>{</symbol>
+		<statements>
+			<let_statement>
+				<identifier>position</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>position</identifier>
+					<symbol>+</symbol>
+					<INT_CONST>1</INT_CONST>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+			<let_statement>
+				<identifier>mask</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>Main</identifier>
+					<symbol>.</symbol>
+					<identifier>nextMask</identifier>
+					<symbol>(</symbol>
+					<expression_list>
+				<expression>
+					<identifier>mask</identifier>
+				</expression>
+					<symbol>)</symbol>
+				</expression_list>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+			<if_statement>
+				<symbol>(</symbol>
+				<expression>
+					<symbol>~</symbol>
+					<symbol>(</symbol>
+				<expression>
+					<identifier>position</identifier>
+					<symbol>></symbol>
+					<INT_CONST>16</INT_CONST>
+				</expression>
+					<symbol>)</symbol>
+				</expression>
+				<symbol>)</symbol>
+				<symbol>{</symbol>
 		<statements>
 			<if_statement>
 				<symbol>(</symbol>
 				<expression>
-					<symbol>-</symbol>
+					<symbol>~</symbol>
 					<symbol>(</symbol>
 				<expression>
-					<identifier>next</identifier>
+					<symbol>(</symbol>
+				<expression>
+					<identifier>value</identifier>
+					<symbol>&</symbol>
+					<identifier>mask</identifier>
+				</expression>
+					<symbol>)</symbol>
 					<symbol>=</symbol>
-					<KEYWORD>null</KEYWORD>
+					<INT_CONST>0</INT_CONST>
 				</expression>
 					<symbol>)</symbol>
 				</expression>
@@ -204,29 +177,191 @@
 				<symbol>{</symbol>
 		<statements>
 			<do_statement>
-				<identifier>next</identifier>
-					<symbol>.</symbol>
-					<identifier>dispose</identifier>
-					<symbol>(</symbol>
-					<symbol>)</symbol>
-				<symbol>;</symbol>
-			</do_statement>
-		</statements>
-				<symbol>}</symbol>
-			</if_statement>
-			<do_statement>
 				<identifier>Memory</identifier>
 					<symbol>.</symbol>
-					<identifier>deAlloc</identifier>
+					<identifier>poke</identifier>
 					<symbol>(</symbol>
 					<expression_list>
 				<expression>
-					<KEYWORD>this</KEYWORD>
+					<INT_CONST>8000</INT_CONST>
+					<symbol>+</symbol>
+					<identifier>position</identifier>
+				</expression>
+					<symbol>,</symbol>
+				<expression>
+					<INT_CONST>1</INT_CONST>
 				</expression>
 					<symbol>)</symbol>
 				</expression_list>
 				<symbol>;</symbol>
 			</do_statement>
+		</statements>
+				<symbol>}</symbol>
+			<else_statement>
+				<symbol>{</symbol>
+		<statements>
+			<do_statement>
+				<identifier>Memory</identifier>
+					<symbol>.</symbol>
+					<identifier>poke</identifier>
+					<symbol>(</symbol>
+					<expression_list>
+				<expression>
+					<INT_CONST>8000</INT_CONST>
+					<symbol>+</symbol>
+					<identifier>position</identifier>
+				</expression>
+					<symbol>,</symbol>
+				<expression>
+					<INT_CONST>0</INT_CONST>
+				</expression>
+					<symbol>)</symbol>
+				</expression_list>
+				<symbol>;</symbol>
+			</do_statement>
+		</statements>
+				<symbol>}</symbol>
+			</if_statement>
+		</statements>
+				<symbol>}</symbol>
+			<else_statement>
+				<symbol>{</symbol>
+		<statements>
+			<let_statement>
+				<identifier>loop</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<KEYWORD>false</KEYWORD>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+		</statements>
+				<symbol>}</symbol>
+			</if_statement>
+		</statements>
+				<symbol>}</symbol>
+			</while_statement>
+			<return_statement>
+				<symbol>;</symbol>
+			</return_statement>
+		</statements>
+		<symbol>}</symbol>
+	</subroutine>
+	<subroutine>
+		<keyword>function</keyword>
+		<keyword>int</keyword>
+		<identifier>nextMask</identifier>
+		<symbol>(</symbol>
+		<param_list>
+			<keyword>int</keyword>
+			<identifier>mask</identifier>
+		</param_list>
+		<symbol>)</symbol>
+		<symbol>{</symbol>
+		<statements>
+			<if_statement>
+				<symbol>(</symbol>
+				<expression>
+					<identifier>mask</identifier>
+					<symbol>=</symbol>
+					<INT_CONST>0</INT_CONST>
+				</expression>
+				<symbol>)</symbol>
+				<symbol>{</symbol>
+		<statements>
+			<return_statement>
+				<expression>
+					<INT_CONST>1</INT_CONST>
+				</expression>
+				<symbol>;</symbol>
+			</return_statement>
+		</statements>
+				<symbol>}</symbol>
+			<else_statement>
+				<symbol>{</symbol>
+		<statements>
+			<return_statement>
+				<expression>
+					<identifier>mask</identifier>
+					<symbol>*</symbol>
+					<INT_CONST>2</INT_CONST>
+				</expression>
+				<symbol>;</symbol>
+			</return_statement>
+		</statements>
+				<symbol>}</symbol>
+			</if_statement>
+		</statements>
+		<symbol>}</symbol>
+	</subroutine>
+	<subroutine>
+		<keyword>function</keyword>
+		<keyword>void</keyword>
+		<identifier>fillMemory</identifier>
+		<symbol>(</symbol>
+		<param_list>
+			<keyword>int</keyword>
+			<identifier>startAddress</identifier>
+			<symbol>,</symbol>
+			<keyword>int</keyword>
+			<identifier>length</identifier>
+			<symbol>,</symbol>
+			<keyword>int</keyword>
+			<identifier>value</identifier>
+		</param_list>
+		<symbol>)</symbol>
+		<symbol>{</symbol>
+		<statements>
+			<while_statement>
+				<symbol>(</symbol>
+				<expression>
+					<identifier>length</identifier>
+					<symbol>></symbol>
+					<INT_CONST>0</INT_CONST>
+				</expression>
+				<symbol>)</symbol>
+				<symbol>{</symbol>
+		<statements>
+			<do_statement>
+				<identifier>Memory</identifier>
+					<symbol>.</symbol>
+					<identifier>poke</identifier>
+					<symbol>(</symbol>
+					<expression_list>
+				<expression>
+					<identifier>startAddress</identifier>
+				</expression>
+					<symbol>,</symbol>
+				<expression>
+					<identifier>value</identifier>
+				</expression>
+					<symbol>)</symbol>
+				</expression_list>
+				<symbol>;</symbol>
+			</do_statement>
+			<let_statement>
+				<identifier>length</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>length</identifier>
+					<symbol>-</symbol>
+					<INT_CONST>1</INT_CONST>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+			<let_statement>
+				<identifier>startAddress</identifier>
+				<symbol>=</symbol>
+				<expression>
+					<identifier>startAddress</identifier>
+					<symbol>+</symbol>
+					<INT_CONST>1</INT_CONST>
+				</expression>
+				<symbol>;</symbol>
+			</let_statement>
+		</statements>
+				<symbol>}</symbol>
+			</while_statement>
 			<return_statement>
 				<symbol>;</symbol>
 			</return_statement>
@@ -234,107 +369,3 @@
 		<symbol>}</symbol>
 	</subroutine>
 </class>
-	<subroutine>
-		<keyword>function</keyword>
-		<keyword>void</keyword>
-		<identifier>create235</identifier>
-		<symbol>(</symbol>
-		<param_list>
-		</param_list>
-		<symbol>)</symbol>
-		<symbol>{</symbol>
-		<varDec>
-			<keyword>var</keyword>
-			<keyword>List</keyword>
-			<identifier>v</identifier>
-			<symbol>;</symbol>
-		</varDec>
-		<statements>
-			<let_statement>
-				<identifier>v</identifier>
-				<symbol>=</symbol>
-				<expression>
-					<identifier>List</identifier>
-					<symbol>.</symbol>
-					<identifier>new</identifier>
-					<symbol>(</symbol>
-					<expression_list>
-				<expression>
-					<INT_CONST>5</INT_CONST>
-				</expression>
-					<symbol>,</symbol>
-				<expression>
-					<KEYWORD>null</KEYWORD>
-				</expression>
-					<symbol>)</symbol>
-				</expression_list>
-				</expression>
-				<symbol>;</symbol>
-			</let_statement>
-			<let_statement>
-				<identifier>v</identifier>
-				<symbol>=</symbol>
-				<expression>
-					<identifier>List</identifier>
-					<symbol>.</symbol>
-					<identifier>new</identifier>
-					<symbol>(</symbol>
-					<expression_list>
-				<expression>
-					<INT_CONST>2</INT_CONST>
-				</expression>
-					<symbol>,</symbol>
-				<expression>
-					<identifier>List</identifier>
-					<symbol>.</symbol>
-					<identifier>new</identifier>
-					<symbol>(</symbol>
-					<expression_list>
-				<expression>
-					<INT_CONST>3</INT_CONST>
-				</expression>
-					<symbol>,</symbol>
-				<expression>
-					<identifier>v</identifier>
-				</expression>
-					<symbol>)</symbol>
-				</expression_list>
-				</expression>
-					<symbol>)</symbol>
-				</expression_list>
-				</expression>
-				<symbol>;</symbol>
-			</let_statement>
-			<while_statement>
-				<symbol>(</symbol>
-				<expression>
-					<identifier>something</identifier>
-				</expression>
-				<symbol>)</symbol>
-				<symbol>{</symbol>
-		<statements>
-			<let_statement>
-				<identifier>v</identifier>
-				<symbol>=</symbol>
-				<expression>
-					<identifier>ok</identifier>
-				</expression>
-				<symbol>;</symbol>
-			</let_statement>
-		</statements>
-				<symbol>}</symbol>
-			</while_statement>
-			<do_statement>
-				<identifier>v</identifier>
-					<symbol>.</symbol>
-					<identifier>dispose</identifier>
-					<symbol>(</symbol>
-					<symbol>)</symbol>
-				<symbol>;</symbol>
-			</do_statement>
-			<return_statement>
-				<symbol>;</symbol>
-			</return_statement>
-		</statements>
-		<symbol>}</symbol>
-	</subroutine>
