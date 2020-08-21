@@ -84,7 +84,6 @@ void Parser::parse_class_var_dec() {
     kind = Tokenizer::to_upper(cur_token);
     query_tokenizer();
 
-
     if (tokenizer.type_exists(cur_token)) {
         out_file << "\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
         type = cur_token;
@@ -124,8 +123,7 @@ void Parser::parse_class_var_dec() {
 void Parser::parse_subroutine() {
     out_file << "\t<subroutine>" << std::endl;
 
-    std::string name;
-
+    std::string name, return_type;
     out_file << "\t\t<keyword>" + cur_subroutine_type + "</keyword>" << std::endl;
 
     if (cur_subroutine_type == "constructor") {
@@ -140,8 +138,9 @@ void Parser::parse_subroutine() {
         out_file << "\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
         query_tokenizer();
     }
-    else if (tokenizer.type_exists(tokenizer.get_current_token()) || tokenizer.get_current_token() == "void") {
 
+    else if (tokenizer.type_exists(cur_token) || cur_token == "void") {
+        return_type = cur_token;
         out_file << "\t\t<keyword>" + cur_token + "</keyword>" << std::endl;
         query_tokenizer();
 
@@ -186,6 +185,11 @@ void Parser::parse_subroutine() {
     query_tokenizer();
     parse_subroutine_body();
 
+    // functions and void return type methods are specified to return 0;
+    if (cur_subroutine_type == "function" || return_type == "void") {
+        vm_writer.write_push("constant", 0);
+    }
+    vm_writer.write_return();
     out_file << "\t</subroutine>" << std::endl;
     symbol_table.start_subroutine();
 }
@@ -364,10 +368,11 @@ void Parser::parse_let_statement() {
 void Parser::parse_if_statement() {
     out_file << "\t\t\t<if_statement>" << std::endl;
 
-    int if_count = symbol_table.get_if_count();
-    vm_writer.write_if("path" + std::to_string(if_count));
-    symbol_table.increment_if_count();
-    symbol_table.increment_if_count();
+    int label_count = symbol_table.get_label_count();
+    vm_writer.write_if(label_count);
+    // reserve two labels for each potential if-else pair
+    symbol_table.increment_label_count();
+    symbol_table.increment_label_count();
 
 
     check_expected_x_after_y("(", "if statement");
@@ -392,8 +397,8 @@ void Parser::parse_if_statement() {
 
     if (cur_token == "else") {
         out_file << "\t\t\t<else_statement>" << std::endl;
-        vm_writer.write_label("path" + std::to_string(if_count));
-        if_count++;
+        vm_writer.write_label(label_count);
+        label_count++;
         query_tokenizer();
 
         check_expected_x_after_y("{", "else statement");
@@ -408,14 +413,14 @@ void Parser::parse_if_statement() {
 
         check_expected_x_after_y("}", "statements");
         out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
-        vm_writer.write_goto("path" + std::to_string(if_count));
+        vm_writer.write_goto(label_count);
 
         // increment for the next (potential) if statement
-        symbol_table.increment_if_count();
+        symbol_table.increment_label_count();
         query_tokenizer();
     }
 
-    vm_writer.write_label("path" + std::to_string(if_count++));
+    vm_writer.write_label(label_count);
     out_file << "\t\t\t</if_statement>" << std::endl;
 }
 
@@ -426,7 +431,14 @@ void Parser::parse_while_statement() {
     out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
     query_tokenizer();
 
+    // start of loop label
+    int label_count = symbol_table.get_label_count();
+    vm_writer.write_label(label_count);
+    symbol_table.increment_label_count();
+    symbol_table.increment_label_count();
+
     parse_expression();
+    vm_writer.write_if(label_count + 1);
 
     check_expected_x_after_y(")", "expression");
     out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
@@ -437,10 +449,13 @@ void Parser::parse_while_statement() {
     query_tokenizer();
 
     parse_statements();
+    vm_writer.write_goto(label_count);
 
     check_expected_x_after_y("}", "statements");
     out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
     query_tokenizer();
+
+    vm_writer.write_label(label_count + 1);
 
     out_file << "\t\t\t</while_statement>" << std::endl;
 }
@@ -453,7 +468,7 @@ void Parser::parse_return_statement() {
     out_file << "\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
     query_tokenizer();
 
-    vm_writer.write_return();
+//    vm_writer.write_return();
     out_file << "\t\t\t</return_statement>" << std::endl;
 }
 
@@ -476,7 +491,9 @@ void Parser::parse_do_statement() {
 
 void Parser::parse_expression() {
     out_file << "\t\t\t\t<expression>" << std::endl;
-    expression_writer(cur_token);
+    if (!tokenizer.op_exists(cur_token)) {
+        expression_writer(cur_token);
+    }
     parse_term();
 
     while (tokenizer.op_exists(cur_token)) {
@@ -514,6 +531,7 @@ void Parser::parse_term() {
         }
         out_file << "\t\t\t\t\t<" + cur_token_type +  ">" +
                     cur_token + "</" + cur_token_type + ">" << std::endl;
+//        vm_writer.write_push("constant", std::stoi(cur_token));
         query_tokenizer();
     }
     else if(cur_token == "(") {
@@ -527,8 +545,20 @@ void Parser::parse_term() {
     }
     else if (cur_token == "-" || cur_token == "~") {
         out_file << "\t\t\t\t\t<symbol>" + cur_token + "</symbol>" << std::endl;
+        std::string symbol = cur_token;
+
         query_tokenizer();
+        // need to create an exception for int const values
+        if (tokenizer.type(cur_token) == "INT_CONST") {
+            vm_writer.write_push("constant", std::stoi(cur_token));
+        }
         parse_term();
+        if (symbol == "-") {
+            vm_writer << "neg";
+        }
+        else {
+            vm_writer.write_arithmetic("~");
+        }
     }
 }
 
@@ -617,14 +647,6 @@ void Parser::check_type_exists() {
     // types defined by language + user defined types
     if (!tokenizer.type_exists(cur_token)) {
         std::cerr << "Compiler Error: '" + cur_token + "' is not a valid type";
-        exit(0);
-    }
-}
-
-void Parser::check_op_exists(const std::string& op_token) {
-    if (!tokenizer.op_exists(op_token)) {
-
-        std::cerr << "Compiler Error: expected a valid operator but instead got " + cur_token;
         exit(0);
     }
 }

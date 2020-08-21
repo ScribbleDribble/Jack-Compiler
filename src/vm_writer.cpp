@@ -17,16 +17,16 @@ void VM_Writer::write_arithmetic(const std::string &command) {
     std::endl;
 }
 
-void VM_Writer::write_label(const std::string &label) {
-    out_file <<"label " + label << std::endl;
+void VM_Writer::write_label(int label_number) {
+    out_file <<"label L" + std::to_string(label_number) << std::endl;
 }
 
-void VM_Writer::write_goto(const std::string &label) {
-    out_file << "goto " + label << std::endl;
+void VM_Writer::write_goto(int label_number) {
+    out_file << "goto L" + std::to_string(label_number) << std::endl;
 }
 
-void VM_Writer::write_if(const std::string &label) {
-    out_file << "if-goto " + label << std::endl;
+void VM_Writer::write_if(int label_number) {
+    out_file << "if-goto L" + std::to_string(label_number) << std::endl;
 }
 
 void VM_Writer::write_call(const std::string &name, int n_args) {

@@ -26,15 +26,15 @@ public:
     void write_push(const std::string& segment, int index);
     void write_pop(const std::string& segment, int index);
     void write_arithmetic(const std::string& command);
-    void write_label(const std::string& label);
-    void write_goto(const std::string& label);
-    void write_if(const std::string& label);
+    void write_label(int label_number);
+    void write_goto(int label_number);
+    void write_if(int label_number);
     void write_call(const std::string& name, int n_args);
     void write_function(const std::string& name, int n_locals);
     void write_return();
 
     void operator <<(const std::string& s)  {
-        out_file << s;
+        out_file << s << std::endl;
     }
 };
 

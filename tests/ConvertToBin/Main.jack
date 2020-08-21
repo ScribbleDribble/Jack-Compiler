@@ -43,21 +43,22 @@ class Main {
     	    let position = position + 1;
     	    let mask = Main.nextMask(mask);
     	
-    	    if (~(position > 16)) {         // if-goto path0
+    	    if (~(position > 16)) {         // if-goto label0
     	
-    	        if (~((value & mask) = 0)) {        // if-goto path2
+    	        if (~((value & mask) = 0)) {        // if-goto label2
     	            do Memory.poke(8000 + position, 1);
        	        }
-    	        else {                                  // path2
-    	            do Memory.poke(8000 + position, 0); // goto path3
+    	        else {                                  // label2
+    	            do Memory.poke(8000 + position, 0); // goto label3
       	        }
-      	        // path3
+      	        // label3
     	    }
-    	    else {      // path0
-    	        let loop = false; // goto path1
+    	    else {      // label0
+    	        let loop = false; // goto label1
     	    }
+    	    // label1
     	}
-    	// path1
+
     	return;
     }
  
@@ -74,11 +75,11 @@ class Main {
     /** Fills 'length' consecutive memory locations with 'value',
       * starting at 'startAddress'. */
     function void fillMemory(int startAddress, int length, int value) {
-        while (length > 0) {
+        while (length > 0) {    // L0 ... if-goto L1
             do Memory.poke(startAddress, value);
             let length = length - 1;
-            let startAddress = startAddress + 1;
+            let startAddress = startAddress + 1;    // goto L0
         }
-        return;
+        return; // L1
     }
 }

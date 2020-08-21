@@ -126,10 +126,10 @@ int Symbol_Table::get_arg_count(const std::string& identifier) {
     return functions[identifier]->n_args;
 }
 
-int Symbol_Table::get_if_count() const {
-    return if_count;
+int Symbol_Table::get_label_count() const {
+    return label_count;
 }
 
-void Symbol_Table::increment_if_count() {
-    if_count++;
+void Symbol_Table::increment_label_count() {
+    label_count++;
 }
